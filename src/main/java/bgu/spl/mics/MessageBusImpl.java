@@ -53,13 +53,13 @@ public class MessageBusImpl implements MessageBus {
 		if(f != null){
 			f.resolve(result);
 		}
-		eventsResults.remove(e);
+		//eventsResults.remove(e);
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue=broadcastsSubscribers.get(b.getClass());
+		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(b.getClass());
 		for(MicroService service: queue){
 			BlockingQueue<Message> queue2 = services.get(service);
 			if(queue2!=null){
