@@ -10,27 +10,45 @@ import java.util.concurrent.ConcurrentHashMap;
  * All other methods and members you add the class must be private.
  */
 public class MessageBusImpl implements MessageBus {
-	ConcurrentHashMap<Event<Boolean>, Future<Boolean>> eventsResults;
-	ConcurrentHashMap<Class<? extends Message>,BlockingQueue<MicroService>> messageSubscribers;
-	//BlockingQueue<MicroService> services;
+	ConcurrentHashMap<Event<?>, Future<?>> eventsResults;
+	ConcurrentHashMap<Class<? extends Event<?>>,BlockingQueue<MicroService>> eventsSubscribers;
+	ConcurrentHashMap<Class<? extends Broadcast>, BlockingQueue<MicroService>> broadcastsSubscribers;
+	ConcurrentHashMap<MicroService, BlockingQueue<Message>> services;
+	public static MessageBusImpl getInstance(){
+
+	}
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue = getSubscribesMap().get(type);
-		queue.put(m);
+		BlockingQueue<MicroService> queue = eventsSubscribers.get(type);
+		if(queue != null) {
+			try {
+				queue.put(m);
+			} catch (InterruptedException e) {
+			}
+		}
 
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		// TODO Auto-generated method stub
-
+		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(type);
+		if(queue != null) {
+			try {
+				queue.put(m);
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 
 	@Override
 	public <T> void complete(Event<T> e, T result) {
 		// TODO Auto-generated method stub
-
+		Future f=  eventsResults.get(e);
+		if(f != null){
+			f.resolve(result);
+		}
 	}
 
 	@Override
@@ -63,9 +81,5 @@ public class MessageBusImpl implements MessageBus {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	public ConcurrentHashMap<Class<? extends Message>,BlockingQueue<MicroService>> getSubscribesMap(){
-		return this.messageSubscribers;
-	}
-	
 
 }
