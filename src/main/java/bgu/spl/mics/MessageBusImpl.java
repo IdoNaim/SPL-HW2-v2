@@ -14,8 +14,11 @@ public class MessageBusImpl implements MessageBus {
 	ConcurrentHashMap<Class<? extends Event<?>>,BlockingQueue<MicroService>> eventsSubscribers;
 	ConcurrentHashMap<Class<? extends Broadcast>, BlockingQueue<MicroService>> broadcastsSubscribers;
 	ConcurrentHashMap<MicroService, BlockingQueue<Message>> services;
+	private static class SingletonHolder{
+		private static MessageBusImpl instance = new MessageBusImpl();
+	}
 	public static MessageBusImpl getInstance(){
-
+		return SingletonHolder.instance;
 	}
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
