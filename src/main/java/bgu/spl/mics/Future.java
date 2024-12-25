@@ -33,14 +33,14 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      * 	       
      */
-	public synchronized T get() throws InterruptedException {
+	public synchronized T get() {
 		//TODO: implement this.
 			try {
 				while (!isDone()) {
 					this.wait();
 				}
 				return Result;
-			}catch(Exception e){
+			}catch(InterruptedException e){
 				Thread.currentThread().interrupt();
 				return null;
 

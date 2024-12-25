@@ -25,7 +25,7 @@ public abstract class MicroService implements Runnable {
     private boolean terminated = false;
     private final String name;
     private MessageBus messageBus;
-    private ConcurrentHashMap<Class<? extends Message>,Callback> callbacks;
+    private ConcurrentHashMap<Class<? extends Message>,Callback<?>> callbacks;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -165,9 +165,11 @@ public abstract class MicroService implements Runnable {
             System.out.println("NOT IMPLEMENTED!!!"); //TODO: you should delete this line :)
             try {
                 Message m = messageBus.awaitMessage(this);
-                Callback callback = callbacks.get(m.getClass());
+                Callback<Message> callback = (Callback<Message>)callbacks.get(m.getClass());
                 callback.call(m);
-
+                if(m instanceof Event){
+                    complete((Event<Boolean>) m,true);
+                }
             }catch (Exception e){
             }
         }

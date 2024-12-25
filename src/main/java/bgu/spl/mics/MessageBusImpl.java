@@ -1,5 +1,10 @@
 package bgu.spl.mics;
 
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
@@ -7,7 +12,8 @@ package bgu.spl.mics;
  * All other methods and members you add the class must be private.
  */
 public class MessageBusImpl implements MessageBus {
-	
+	ConcurrentHashMap <MicroService, BlockingQueue<Message>> servicesQueues;
+	ConcurrentHashMap <Message, Future> eventsResults;
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// TODO Auto-generated method stub
