@@ -2,6 +2,7 @@ package bgu.spl.mics;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -52,11 +53,23 @@ public class MessageBusImpl implements MessageBus {
 		if(f != null){
 			f.resolve(result);
 		}
+		eventsResults.remove(e);
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		// TODO Auto-generated method stub
+		BlockingQueue<MicroService> queue=broadcastsSubscribers.get(b.getClass());
+		for(MicroService service: queue){
+			BlockingQueue<Message> queue2 = services.get(service);
+			if(queue2!=null){
+				try {
+					queue2.put(b);
+				}catch(InterruptedException e){
+					//TODO: think what t put here
+				}
+			}
+		}
 
 	}
 
@@ -64,25 +77,47 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		// TODO Auto-generated method stub
-		return null;
+		BlockingQueue<MicroService> queue = eventsSubscribers.get(e);
+		try {
+			MicroService m = queue.take();
+			services.get(m).put(e);
+			queue.put(m);
+			Future<T> future =new Future<>();
+			eventsResults.putIfAbsent(e, future);
+			return future;
+		}catch (InterruptedException E){}
+		return null; //TODO understand what to to put here
 	}
 
 	@Override
 	public void register(MicroService m) {
 		// TODO Auto-generated method stub
+		BlockingQueue<Message> newQueue = new LinkedBlockingQueue<Message>();
+		services.putIfAbsent(m,newQueue);
 
 	}
 
 	@Override
 	public void unregister(MicroService m) {
 		// TODO Auto-generated method stub
+		BlockingQueue<Message> queue=services.remove(m);
+		for(Message message: queue){
+			if(message instanceof Event){
+				complete((Event)message, null);
+			}
+		}
 
 	}
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
-		return null;
+		try{
+			Message message = services.get(m).take();
+			return message;
+		}catch (InterruptedException e){
+			throw new InterruptedException();
+		}
 	}
 
 }
