@@ -1,5 +1,6 @@
 package bgu.spl.mics;
 
+import java.security.spec.ECField;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -13,15 +14,15 @@ import java.util.concurrent.atomic.AtomicReference;
  * No public constructor is allowed except for the empty constructor.
  */
 public class Future<T> {
-	private AtomicReference<T> Result;
-	private AtomicBoolean isDone;
+	private T Result;
+	private boolean isDone;
 	/**
 	 * This should be the the only public constructor in this class.
 	 */
 	public Future() {
 		//TODO: implement this
 		Result =null;
-		isDone = new AtomicBoolean(false);
+		isDone = false;
 	}
 	
 	/**
@@ -34,11 +35,16 @@ public class Future<T> {
      */
 	public synchronized T get() throws InterruptedException {
 		//TODO: implement this.
-		while(!isDone()){
-			this.wait();
-		}
-		return Result.get();
+			try {
+				while (!isDone()) {
+					this.wait();
+				}
+				return Result;
+			}catch(Exception e){
+				Thread.currentThread().interrupt();
+				return null;
 
+		}
 	}
 	
 	/**
@@ -47,8 +53,8 @@ public class Future<T> {
 	public synchronized void resolve (T result) {
 		//TODO: implement this.
 		if(!isDone()) {
-			this.Result.set(result);
-			isDone = new AtomicBoolean(true);
+			Result = result;
+			isDone = true;
 			this.notifyAll();
 		}
 
@@ -58,7 +64,7 @@ public class Future<T> {
      * @return true if this object has been resolved, false otherwise
      */
 	public synchronized boolean isDone() {
-		return isDone.get();
+		return isDone;
 	}
 	
 	/**
@@ -80,8 +86,9 @@ public class Future<T> {
 			if(!isDone()){
 				return null;
 			}
-			return Result.get();
+			return Result;
 		}catch(Exception e){
+			Thread.currentThread().interrupt();
 			return null;
 		}
     }
