@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * A Future object represents a promised result - an object that will
  * eventually be resolved to hold a result of some operation. The class allows
  * Retrieving the result once it is available.
- * 
  * Only private methods may be added to this class.
  * No public constructor is allowed except for the empty constructor.
  */
@@ -17,11 +16,10 @@ public class Future<T> {
 	private T Result;
 	private boolean isDone;
 	/**
-	 * This should be the the only public constructor in this class.
+	 * This should be the only public constructor in this class.
 	 */
 	public Future() {
-		//TODO: implement this
-		Result =null;
+		Result = null;
 		isDone = false;
 	}
 	
@@ -33,29 +31,26 @@ public class Future<T> {
      * @return return the result of type T if it is available, if not wait until it is available.
      * 	       
      */
-	public synchronized T get() throws InterruptedException {
-		//TODO: implement this.
-			try {
-				while (!isDone()) {
-					this.wait();
-				}
-				return Result;
-			}catch(Exception e){
-				Thread.currentThread().interrupt();
-				return null;
+	public synchronized T get(){
 
+		while (!isDone) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) { }
 		}
+		return Result;
+
 	}
 	
 	/**
      * Resolves the result of this Future object.
      */
 	public synchronized void resolve (T result) {
-		//TODO: implement this.
-		if(!isDone()) {
+
+		if(!isDone) {
 			Result = result;
 			isDone = true;
-			this.notifyAll();
+			notifyAll();
 		}
 
 	}
@@ -79,18 +74,15 @@ public class Future<T> {
      *         elapsed, return null.
      */
 	public synchronized T get(long timeout, TimeUnit unit) {
+		if(isDone)
+			return Result;
 		try {
-			if (!isDone()) {
-				this.wait(unit.toMillis(timeout));
-			}
-			if(!isDone()){
-				return null;
-			}
+			this.wait(unit.toMillis(timeout));
 			return Result;
 		}catch(Exception e){
-			Thread.currentThread().interrupt();
 			return null;
 		}
-    }
+
+	}
 
 }
