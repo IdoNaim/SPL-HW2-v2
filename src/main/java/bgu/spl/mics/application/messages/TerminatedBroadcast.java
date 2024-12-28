@@ -7,4 +7,7 @@ public class TerminatedBroadcast implements Broadcast {
     public TerminatedBroadcast(String sender){
         this.sender=sender;
     }
+    public String getSender(){
+        return this.sender;
+    }
 }

@@ -3,12 +3,20 @@ package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Event;
 import bgu.spl.mics.application.objects.Pose;
 
-public class PoseEvent implements Event {
+public class PoseEvent implements Event<Boolean> {
     private String sender;
     private Pose pose;
-    public PoseEvent(String sender,double x, double y, double yaw){
+    public PoseEvent(Pose currPose){
         this.sender = sender;
-        this.pose = new Pose(x,y,yaw); //TODO: maybe change this
+        this.pose = currPose; //TODO: maybe change this
     }
-
+    public Pose getCurrentPose(){
+        return pose;
+    }
+    public String toString(){
+        return pose.toString();
+    }
+    public String getSender(){
+        return this.sender;
+    }
 }

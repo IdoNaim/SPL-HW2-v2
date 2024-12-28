@@ -10,4 +10,10 @@ public class TickBroadcast implements Broadcast {
         this.sender = sender;
         this.currTime = time;
     }
+    public int getCurrTime(){
+        return this.currTime;
+    }
+    public String getSender(){
+        return this.sender;
+    }
 }

@@ -9,4 +9,10 @@ public class CrashedBroadcast implements Broadcast {
         this.sender = sender;
         this.crashReason = crashReason;
     }
+    public String getSender(){
+        return this.sender;
+    }
+    public String getCrashReason(){
+        return this.crashReason;
+    }
 }
