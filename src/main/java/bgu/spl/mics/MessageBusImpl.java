@@ -1,8 +1,10 @@
 package bgu.spl.mics;
 
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
+
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -11,6 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * All other methods and members you add the class must be private.
  */
 public class MessageBusImpl implements MessageBus {
+
 	ConcurrentHashMap<Event<?>, Future<?>> eventsResults;
 	ConcurrentHashMap<Class<? extends Event<?>>,BlockingQueue<MicroService>> eventsSubscribers;
 	ConcurrentHashMap<Class<? extends Broadcast>, BlockingQueue<MicroService>> broadcastsSubscribers;
@@ -21,6 +24,7 @@ public class MessageBusImpl implements MessageBus {
 	public static MessageBusImpl getInstance(){
 		return SingletonHolder.instance;
 	}
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// TODO Auto-generated method stub
