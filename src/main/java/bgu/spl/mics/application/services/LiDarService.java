@@ -42,7 +42,7 @@ public class LiDarService extends MicroService {
 
         });
         subscribeEvent(DetectObjectsEvent.class, (DetectedObjectsEvent e)->{
-            
+
         });
     }
 }
