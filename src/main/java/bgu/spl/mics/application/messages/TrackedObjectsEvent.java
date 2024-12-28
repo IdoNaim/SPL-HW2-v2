@@ -3,13 +3,15 @@ package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Broadcast;
 import bgu.spl.mics.Event;
 import bgu.spl.mics.application.objects.StampedDetectedObjects;
+import bgu.spl.mics.application.objects.TrackedObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TrackedObjectsEvent implements Event {
-    private StampedDetectedObjects objects;
-    private int detectionTime;
+    private ArrayList<TrackedObject> trackedObjects;
 
-    public TrackedObjectsEvent(StampedDetectedObjects objectsList, int time){
-        this.objects=objectsList;
-        this.detectionTime=time;
+    public TrackedObjectsEvent(ArrayList<TrackedObject> trackedObjects){
+        this.trackedObjects=trackedObjects;
     }
 }
