@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackedObjectsEvent implements Event {
+    private String sender;
     private ArrayList<TrackedObject> trackedObjects;
 
     public TrackedObjectsEvent(ArrayList<TrackedObject> trackedObjects){
+        this.sender=sender;
         this.trackedObjects=trackedObjects;
     }
 }
