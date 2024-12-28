@@ -12,5 +12,13 @@ public class GPSIMU {
     STATUS status;
     ArrayList<Pose> PoseList;
 
+    public  GPSIMU(int currentTick){
+        this.currentTick = currentTick;
+        status = STATUS.DOWN;
+        PoseList = new ArrayList<>();
+    }
+
+
+
 
 }

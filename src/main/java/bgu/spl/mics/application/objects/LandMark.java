@@ -12,5 +12,11 @@ public class LandMark {
     String Description;
     ArrayList<CloudPoint> Coordinates;
 
+    public LandMark(String id, String Description, ArrayList<CloudPoint> Coordinates) {
+        this.id = id;
+        this.Description = Description;
+        this.Coordinates = Coordinates;
+    }
+
 
 }

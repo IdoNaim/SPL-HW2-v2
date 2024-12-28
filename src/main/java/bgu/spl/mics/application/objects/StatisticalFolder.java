@@ -12,7 +12,8 @@ public class StatisticalFolder {
     int numTrackedObjects;
     int numLandmarks;
 
-
+    // TODO: Its not written, but I think this one is a Singleton too.
+    // TODO: Its a folder which holds info about the run
 
 
 

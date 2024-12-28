@@ -10,7 +10,7 @@ public class LiDarDataBase {
 
     ArrayList<StampedCloudPoints> cloudPoints;
 
-
+    // TODO: Constructor? it's a Singleton
 
 
     /**

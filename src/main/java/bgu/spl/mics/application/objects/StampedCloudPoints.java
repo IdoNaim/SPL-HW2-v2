@@ -12,6 +12,11 @@ public class StampedCloudPoints {
     int time;
     ArrayList<List<Double>> cloudPoints;
 
+    public StampedCloudPoints(String id, int time) {
+        this.id = id;
+        this.time = time;
+        // TODO: cloudPoints = ?
+    }
 
 
 }

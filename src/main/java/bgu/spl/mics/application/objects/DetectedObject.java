@@ -9,6 +9,11 @@ public class DetectedObject {
     String id;
     String description;
 
+    public DetectedObject(String id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
 
 
 }

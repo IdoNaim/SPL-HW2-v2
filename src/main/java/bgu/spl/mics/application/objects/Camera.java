@@ -13,5 +13,12 @@ public class Camera {
     STATUS status;
     ArrayList<DetectedObject> detectedObjectList;
 
+    public Camera(int id, int frequency){
+        this.id = id;
+        this.frequency = frequency;
+        status = STATUS.DOWN;
+        detectedObjectList = new ArrayList<>();
+    }
+
 
 }
