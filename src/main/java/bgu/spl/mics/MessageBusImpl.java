@@ -77,14 +77,17 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue = eventsSubscribers.get(e);
+		BlockingQueue<MicroService> queue = eventsSubscribers.get(e.getClass());
 		try {
-			MicroService m = queue.take();
-			services.get(m).put(e);
-			queue.put(m);
-			Future<T> future =new Future<>();
-			eventsResults.putIfAbsent(e, future);
-			return future;
+			MicroService m = queue.poll();
+			if(m != null) {
+				services.get(m).put(e);
+				queue.put(m);
+				Future<T> future = new Future<>();
+				eventsResults.putIfAbsent(e, future);
+				return future;
+			}
+			return null;
 		}catch (InterruptedException E){}
 		return null; //TODO understand what to to put here
 	}
