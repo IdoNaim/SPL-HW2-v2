@@ -29,6 +29,6 @@ public class TimeService extends MicroService {
     @Override
     protected void initialize() {
         // TODO Implement this
-        
+
     }
 }
