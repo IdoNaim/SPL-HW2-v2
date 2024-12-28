@@ -6,5 +6,15 @@ package bgu.spl.mics.application.objects;
  * the number of objects detected and tracked, and the number of landmarks identified.
  */
 public class StatisticalFolder {
-    // TODO: Define fields and methods for statistics tracking.
+
+    int systemRuntime;
+    int numDetectedObjects;
+    int numTrackedObjects;
+    int numLandmarks;
+
+    // TODO: Its not written, but I think this one is a Singleton too.
+    // TODO: Its a folder which holds info about the run
+
+
+
 }
