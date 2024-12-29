@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.application.messages.DetectedObjectsEvent;
+import bgu.spl.mics.application.messages.TrackedObjectsEvent;
+
 import java.util.ArrayList;
 
 /**
@@ -10,10 +13,10 @@ import java.util.ArrayList;
 public class LiDarWorkerTracker {
 
 
-    int id;
-    int frequency;
-    STATUS status;
-    ArrayList<TrackedObject> lastTrackedObjects;
+    private int id;
+    private int frequency;
+    private STATUS status;
+    private ArrayList<TrackedObject> lastTrackedObjects;
 
     public LiDarWorkerTracker(int id, int frequency){
         this.id = id;
@@ -22,7 +25,35 @@ public class LiDarWorkerTracker {
         lastTrackedObjects = new ArrayList<>();
     }
 
-
-
-
+    public void Up(){
+        this.status = STATUS.UP;
+    }
+    public void Down(){
+        status = STATUS.DOWN;
+    }
+    public void Error(){
+        status = STATUS.ERROR;
+    }
+    /*
+       return null if there is error
+     */
+    public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e){
+        lastTrackedObjects = getTrackedObjects(e.getDetectedObjects());
+        if(lastTrackedObjects == null){
+            return null;
+        }
+        for (TrackedObject obj: lastTrackedObjects){
+            if (obj.getId() == "Error"){
+                return null;
+            }
+        }
+        return new TrackedObjectsEvent(lastTrackedObjects);
+    }
+    /*
+    returns empty list if no detection was made
+    return null if Detected objects dont match Tracked objects
+    */
+    public ArrayList<TrackedObject> getTrackedObjects(StampedDetectedObjects objects){
+        return null; //TODO: implement
+    }
 }

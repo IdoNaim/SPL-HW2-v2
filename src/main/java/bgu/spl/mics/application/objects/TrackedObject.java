@@ -9,16 +9,19 @@ import java.util.ArrayList;
  */
 public class TrackedObject {
 
-    String id;
-    int time;
-    String description;
-    ArrayList<CloudPoint> coordinates;
+    private String id;
+    private int time;
+    private String description;
+    private ArrayList<CloudPoint> coordinates;
 
     public TrackedObject(String id, int time, String description) {
         this.id = id;
         this.time = time;
         this.description = description;
         coordinates = new ArrayList<>();
+    }
+    public String getId(){
+        return id;
     }
 
 

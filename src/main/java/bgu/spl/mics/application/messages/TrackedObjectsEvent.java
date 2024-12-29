@@ -25,4 +25,7 @@ public class TrackedObjectsEvent implements Event<Boolean> {
     public String toString(){
         return this.trackedObjects.toString();
     }
+    public boolean isEmpty(){
+        return trackedObjects.isEmpty();
+    }
 }

@@ -1,6 +1,6 @@
 package bgu.spl.mics.application.objects;
 
-import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import bgu.spl.mics.application.messages.DetectedObjectsEvent;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ public class Camera {
     /*
     return Null if there is error
      */
-    public DetectObjectsEvent handleTick(int time){
+    public DetectedObjectsEvent handleTick(int time){
         detectedObjectList = getDetectedObjects(time);
         for(DetectedObject obj : detectedObjectList){
             if(obj.getId() == "ERROR"){
@@ -41,7 +41,7 @@ public class Camera {
             }
         }
         StampedDetectedObjects result = new StampedDetectedObjects(time, detectedObjectList);
-        return new DetectObjectsEvent("camera",result, time +frequency);
+        return new DetectedObjectsEvent("camera",result, time +frequency);
 
 
     }
