@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.application.messages.DetectObjectsEvent;
+
 import java.util.ArrayList;
 
 /**
@@ -8,10 +10,10 @@ import java.util.ArrayList;
  */
 public class Camera {
 
-    int id;
-    int frequency;
-    STATUS status;
-    ArrayList<DetectedObject> detectedObjectList;
+    private int id;
+    private int frequency;
+    private STATUS status;
+    private ArrayList<DetectedObject> detectedObjectList;
 
     public Camera(int id, int frequency){
         this.id = id;
@@ -19,6 +21,36 @@ public class Camera {
         status = STATUS.DOWN;
         detectedObjectList = new ArrayList<>();
     }
+    public void Up(){
+        this.status = STATUS.UP;
+    }
+    public void Down(){
+        status = STATUS.DOWN;
+    }
+    public void Error(){
+        status = STATUS.ERROR;
+    }
+    /*
+    return Null if there is error
+     */
+    public DetectObjectsEvent handleTick(int time){
+        detectedObjectList = getDetectedObjects(time);
+        for(DetectedObject obj : detectedObjectList){
+            if(obj.getId() == "ERROR"){
+                return null;
+            }
+        }
+        StampedDetectedObjects result = new StampedDetectedObjects(time, detectedObjectList);
+        return new DetectObjectsEvent("camera",result, time +frequency);
 
+
+    }
+    /*
+    returns empty list if no objects detected
+     */
+    private ArrayList<DetectedObject> getDetectedObjects(int time){
+        //TODO: implement with Gson
+        return null;
+    }
 
 }
