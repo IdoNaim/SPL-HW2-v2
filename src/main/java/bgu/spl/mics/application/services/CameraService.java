@@ -41,6 +41,7 @@ public class CameraService extends MicroService {
                 Future<Boolean> f = sendEvent(e);
             }
             else{
+                camera.Error();
                 sendBroadcast(new CrashedBroadcast(getName(),"Camera Disconnected"));
             }
         });
