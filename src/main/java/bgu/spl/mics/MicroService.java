@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.TerminatedBroadcast;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -178,6 +180,8 @@ public abstract class MicroService implements Runnable {
             }
         }
         getMessageBus().unregister(this);
+        sendBroadcast(new TerminatedBroadcast(getName()));
+        //Thread.getCurrentThread().terminate() ?
     }
     private MessageBus getMessageBus(){
         return this.messageBus;

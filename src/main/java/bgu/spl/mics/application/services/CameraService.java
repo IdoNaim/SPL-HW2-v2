@@ -1,7 +1,12 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import bgu.spl.mics.application.messages.TerminatedBroadcast;
+import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
+import bgu.spl.mics.application.messages.CrashedBroadcast;
 
 /**
  * CameraService is responsible for processing data from the camera and
@@ -31,13 +36,23 @@ public class CameraService extends MicroService {
     protected void initialize() {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-
+            DetectObjectsEvent e = camera.handleTick(c.getCurrTime());
+            if(e != null) {
+                Future<Boolean> f = sendEvent(e);
+            }
+            else{
+                camera.Error();
+                sendBroadcast(new CrashedBroadcast(getName(),"Camera Disconnected"));
+            }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
+            camera.Down();
             terminate();
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
-            
+            camera.Down();
+            terminate();
         });
+        camera.Up();
     }
 }
