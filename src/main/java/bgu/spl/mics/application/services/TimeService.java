@@ -1,14 +1,16 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TickBroadcast;
 
 /**
  * TimeService acts as the global timer for the system, broadcasting TickBroadcast messages
  * at regular intervals and controlling the simulation's duration.
  */
 public class TimeService extends MicroService {
-    private int tickTime;
+    private int speed;
     private int duration;
+    private int ticks;
     /**
      * Constructor for TimeService.
      *
@@ -17,8 +19,9 @@ public class TimeService extends MicroService {
      */
     public TimeService(int TickTime, int Duration) {
         super("Time");
-        this.tickTime = TickTime;
+        this.speed = TickTime;
         this.duration = Duration;
+        this.ticks=0;
         // TODO Implement this
     }
 
@@ -29,6 +32,32 @@ public class TimeService extends MicroService {
     @Override
     protected void initialize() {
         // TODO Implement this
+        try {
+            while (getTicks() <= getDuration()) {
+                TickBroadcast b = new TickBroadcast(getName(), getTicks());
+                sendBroadcast(b);
+                incTick();
+                Thread.sleep(getSpeed());
+            }
+            terminate();
+            Thread.currentThread().interrupt();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
 
+
+    }
+    private void incTick(){
+        this.ticks++;
+    }
+    private int getTicks(){
+        return ticks;
+    }
+    private int getDuration(){
+        return duration;
+    }
+    private int getSpeed(){
+        return speed;
     }
 }
