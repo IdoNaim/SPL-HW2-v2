@@ -47,7 +47,7 @@ public class LiDarWorkerTracker {
                 return null;
             }
         }
-        return new TrackedObjectsEvent(lastTrackedObjects);
+        return new TrackedObjectsEvent("LidarWorkerTracker", lastTrackedObjects);
     }
     /*
     returns empty list if no detection was made

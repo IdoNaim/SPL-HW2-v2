@@ -40,6 +40,9 @@ public class CameraService extends MicroService {
             if(e != null){
                 if(!e.getDetectedObjects().isEmpty()) {
                     Future<Boolean> f = sendEvent(e);
+                    //Boolean b = f.get();
+                    //if(b !=null)
+                    //complete(e, b)
                 }
             }
             else{

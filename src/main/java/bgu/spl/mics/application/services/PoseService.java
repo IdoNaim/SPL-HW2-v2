@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
+import bgu.spl.mics.application.messages.PoseEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.GPSIMU;
@@ -31,13 +32,18 @@ public class PoseService extends MicroService {
     protected void initialize() {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-
+            PoseEvent e = gps.handleTick(c.getCurrTime());
+            if (e != null){
+                sendEvent(e);
+            }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
+            gps.Down();
             terminate();
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
-
+            gps.Down();
+            terminate();
         });
     }
 }

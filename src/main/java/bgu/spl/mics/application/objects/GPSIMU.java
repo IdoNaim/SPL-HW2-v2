@@ -1,5 +1,7 @@
 package bgu.spl.mics.application.objects;
 
+import bgu.spl.mics.application.messages.PoseEvent;
+
 import java.util.ArrayList;
 
 /**
@@ -17,8 +19,25 @@ public class GPSIMU {
         status = STATUS.DOWN;
         PoseList = new ArrayList<>();
     }
+    public void Up(){
+        this.status = STATUS.UP;
+    }
+    public void Down(){
+        status = STATUS.DOWN;
+    }
+    public void Error(){
+        status = STATUS.ERROR;
+    }
 
-
+    public PoseEvent handleTick(int time){
+        currentTick = time;
+        Pose currPose = getPose(time);
+        PoseList.add(currPose);
+        return new PoseEvent("GPSIMU", currPose);
+    }
+    public Pose getPose(int time){
+        //TODO: implement with Gson
+    }
 
 
 }

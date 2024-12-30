@@ -12,7 +12,7 @@ public class TrackedObjectsEvent implements Event<Boolean> {
     private String sender;
     private ArrayList<TrackedObject> trackedObjects;
 
-    public TrackedObjectsEvent(ArrayList<TrackedObject> trackedObjects){
+    public TrackedObjectsEvent(String sender, ArrayList<TrackedObject> trackedObjects){
         this.sender=sender;
         this.trackedObjects=trackedObjects;
     }
