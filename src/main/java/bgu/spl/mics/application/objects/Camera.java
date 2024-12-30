@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -40,7 +41,7 @@ public class Camera {
     public DetectObjectsEvent handleTick(int time){
         detectedObjectList = getDetectedObjects(time);
         for(DetectedObject obj : detectedObjectList){
-            if(obj.getId() == "ERROR"){
+            if(obj.getId().equals("ERROR")){
                 return null;
             }
         }
@@ -56,10 +57,11 @@ public class Camera {
         Gson gson = new Gson();
         String fileName = "camera_data.json";
         ArrayList<DetectedObject> result = new ArrayList<>();
+        String cameraName = String.format("camera%d", this.id);
         try (FileReader fileReader = new FileReader(fileName)){
             JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
-            JsonArray camera1 = jsonObject.getAsJsonArray("camera1");
-            for(JsonElement element : camera1){
+            JsonArray camera = jsonObject.getAsJsonArray(cameraName);
+            for(JsonElement element : camera){
                 JsonObject detectedObject = element.getAsJsonObject();
                 if(detectedObject.get("time").getAsInt() == time){
                     JsonArray objectsArray = detectedObject.getAsJsonArray("detectedObjects");
