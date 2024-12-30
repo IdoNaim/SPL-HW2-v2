@@ -23,6 +23,15 @@ public class TrackedObject {
     public String getId(){
         return id;
     }
+    public String getDescription(){
+        return description;
+    }
+    public ArrayList<CloudPoint> getCoordinates(){
+        return coordinates;
+    }
+    public int getTime(){
+        return time;
+    }
 
 
 
