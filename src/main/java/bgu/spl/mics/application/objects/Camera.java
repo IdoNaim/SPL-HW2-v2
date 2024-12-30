@@ -1,7 +1,11 @@
 package bgu.spl.mics.application.objects;
 
 import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 
 /**
@@ -49,8 +53,32 @@ public class Camera {
     returns empty list if no objects detected
      */
     private ArrayList<DetectedObject> getDetectedObjects(int time){
-        //TODO: implement with Gson
-        return null;
+        Gson gson = new Gson();
+        String fileName = "camera_data.json";
+        ArrayList<DetectedObject> result = new ArrayList<>();
+        try (FileReader fileReader = new FileReader(fileName)){
+            JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
+            JsonArray camera1 = jsonObject.getAsJsonArray("camera1");
+            for(JsonElement element : camera1){
+                JsonObject detectedObject = element.getAsJsonObject();
+                if(detectedObject.get("time").getAsInt() == time){
+                    JsonArray objectsArray = detectedObject.getAsJsonArray("detectedObjects");
+                    for (JsonElement objectElement : objectsArray) {
+                        JsonObject object = objectElement.getAsJsonObject();
+                        String id = object.get("id").getAsString();
+                        String description = object.get("description").getAsString();
+                        result.add(new DetectedObject(id, description));
+                    }
+                }
+                else if(detectedObject.get("time").getAsInt() > time)
+                    break;
+            }
+
+        }
+        catch (Exception e){
+
+        }
+        return result;
     }
 
 }
