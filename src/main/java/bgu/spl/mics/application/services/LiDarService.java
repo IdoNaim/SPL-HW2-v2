@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.services;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.LiDarWorkerTracker;
 
 /**
@@ -33,16 +35,30 @@ public class LiDarService extends MicroService {
     protected void initialize() {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-
+            //TODO: what to do here?
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
+            liDarWorkerTracker.Down();
             terminate();
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
-
+            liDarWorkerTracker.Down();
+            terminate();
         });
-        subscribeEvent(DetectObjectsEvent.class, (DetectedObjectsEvent e)->{
-
+        subscribeEvent(DetectedObjectsEvent.class, (DetectedObjectsEvent e)->{
+            TrackedObjectsEvent t = liDarWorkerTracker.handleDetectedObjects(e);
+            if(t != null){
+                if(!t.getTrackedObjects().isEmpty()){
+                    Future<Boolean> f = sendEvent(t);
+                    complete(e, true);
+                }
+            }
+            else{
+                complete(e, false);
+                liDarWorkerTracker.Error();
+                sendBroadcast(new CrashedBroadcast(getName(),"LiDar disconnected"));
+            }
         });
+        liDarWorkerTracker.Up();
     }
 }

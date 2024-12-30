@@ -2,7 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.DetectObjectsEvent;
+import bgu.spl.mics.application.messages.DetectedObjectsEvent;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
@@ -36,9 +36,14 @@ public class CameraService extends MicroService {
     protected void initialize() {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-            DetectObjectsEvent e = camera.handleTick(c.getCurrTime());
-            if(e != null) {
-                Future<Boolean> f = sendEvent(e);
+            DetectedObjectsEvent e = camera.handleTick(c.getCurrTime());
+            if(e != null){
+                if(!e.getDetectedObjects().isEmpty()) {
+                    Future<Boolean> f = sendEvent(e);
+                    //Boolean b = f.get();
+                    //if(b !=null)
+                    //complete(e, b)
+                }
             }
             else{
                 camera.Error();

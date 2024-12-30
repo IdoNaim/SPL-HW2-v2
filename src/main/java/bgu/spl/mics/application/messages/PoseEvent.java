@@ -6,7 +6,7 @@ import bgu.spl.mics.application.objects.Pose;
 public class PoseEvent implements Event<Boolean> {
     private String sender;
     private Pose pose;
-    public PoseEvent(Pose currPose){
+    public PoseEvent(String sender,Pose currPose){
         this.sender = sender;
         this.pose = currPose; //TODO: maybe change this
     }

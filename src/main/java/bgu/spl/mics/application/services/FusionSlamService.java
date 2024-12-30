@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.TrackedObject;
 
@@ -33,19 +34,19 @@ public class FusionSlamService extends MicroService {
     protected void initialize() {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-
+            fusionSlam.handleTick(c.getCurrTime());
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
             terminate();
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
-
+            terminate();
         });
         subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent e)->{
-
+            fusionSlam.handleTrackedObjects(e);
         });
         subscribeEvent(PoseEvent.class, (PoseEvent e)->{
-
+            fusionSlam.handlePoseEvent(e);
         });
     }
 }

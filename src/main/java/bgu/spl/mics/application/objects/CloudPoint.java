@@ -13,6 +13,16 @@ public class CloudPoint {
         this.x = x;
         this.y = y;
     }
+    public double getX(){
+        return x;
+    }
+    public double getY(){
+        return y;
+    }
+    public void update(CloudPoint c){
+        this.x = (getX() + c.getX())/2;
+        this.y = (getY() + c.getY())/2;
+    }
 
 
 

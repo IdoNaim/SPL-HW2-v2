@@ -8,12 +8,18 @@ import java.util.ArrayList;
  */
 public class StampedDetectedObjects {
 
-    int time;
-    ArrayList<DetectedObject> DetectedObjects;
+    private int time;
+    private ArrayList<DetectedObject> DetectedObjects;
 
     public StampedDetectedObjects(int time, ArrayList<DetectedObject> objects){
         this.time = time;
         DetectedObjects = objects;
         // TODO: DetectedObjects = ?
+    }
+    public boolean isEmpty(){
+        return DetectedObjects.isEmpty();
+    }
+    public int getTime(){
+        return time;
     }
 }
