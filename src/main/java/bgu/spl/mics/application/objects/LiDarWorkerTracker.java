@@ -12,16 +12,17 @@ public class LiDarWorkerTracker {
 
     int id;
     int frequency;
-    STATUS status;
+    STATUS status = STATUS.UP;
     ArrayList<TrackedObject> lastTrackedObjects;
 
-    public LiDarWorkerTracker(int id, int frequency){
-        this.id = id;
-        this.frequency = frequency;
-        status = STATUS.DOWN;
-        lastTrackedObjects = new ArrayList<>();
-    }
-
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
+    public int getFrequency() {return frequency;}
+    public void setFrequency(int frequency) {this.frequency = frequency;}
+    public STATUS getStatus() {return status;}
+    public void setStatus(STATUS status) {this.status = status;}
+    public ArrayList<TrackedObject> getLastTrackedObjects() {return lastTrackedObjects;}
+    public void setLastTrackedObjects(ArrayList<TrackedObject> lastTrackedObjects) {this.lastTrackedObjects = lastTrackedObjects;}
 
 
 

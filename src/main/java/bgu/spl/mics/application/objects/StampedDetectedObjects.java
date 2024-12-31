@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents objects detected by the camera at a specific timestamp.
@@ -9,11 +10,12 @@ import java.util.ArrayList;
 public class StampedDetectedObjects {
 
     int time;
-    ArrayList<DetectedObject> DetectedObjects;
+    ArrayList<DetectedObject> detectedObjects;
 
-    public StampedDetectedObjects(int time, ArrayList<DetectedObject> objects){
+    public StampedDetectedObjects(int time) {
         this.time = time;
-        DetectedObjects = objects;
-        // TODO: DetectedObjects = ?
+        this.detectedObjects = new ArrayList<>();
     }
+
+
 }
