@@ -1,6 +1,6 @@
 package bgu.spl.mics.application.objects;
 
-<<<<<<< HEAD
+
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
