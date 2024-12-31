@@ -22,10 +22,17 @@ public class FusionSlam {
     // Singleton instance holder
     private static class FusionSlamHolder {
         // TODO: Implement singleton instance logic.
+        private static FusionSlam instance = new FusionSlam();
     }
-
+    private FusionSlam(){
+        landmarks = new ArrayList<>();
+        Poses = new ArrayList<>();
+    }
+    public static FusionSlam getInstance(){
+        return FusionSlamHolder.instance;
+    }
     public void handleTick(int time){
-
+       //TODO: implement
     }
     public void handleTrackedObjects(TrackedObjectsEvent e){
         ArrayList<TrackedObject> lst = e.getTrackedObjects();
