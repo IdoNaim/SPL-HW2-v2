@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class LiDarWorkerTracker {
 
 
+
     private int id;
     private int frequency;
     private STATUS status;
@@ -56,4 +57,15 @@ public class LiDarWorkerTracker {
     public ArrayList<TrackedObject> getTrackedObjects(StampedDetectedObjects objects){
         return null; //TODO: implement
     }
+
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
+    public int getFrequency() {return frequency;}
+    public void setFrequency(int frequency) {this.frequency = frequency;}
+    public STATUS getStatus() {return status;}
+    public void setStatus(STATUS status) {this.status = status;}
+    public ArrayList<TrackedObject> getLastTrackedObjects() {return lastTrackedObjects;}
+    public void setLastTrackedObjects(ArrayList<TrackedObject> lastTrackedObjects) {this.lastTrackedObjects = lastTrackedObjects;}
+
+
 }

@@ -12,13 +12,13 @@ public class TrackedObject {
     private String id;
     private int time;
     private String description;
-    private ArrayList<CloudPoint> coordinates;
+    CloudPoint[] coordinates;
 
     public TrackedObject(String id, int time, String description) {
         this.id = id;
         this.time = time;
         this.description = description;
-        coordinates = new ArrayList<>();
+        // TODO: coordinates = ?
     }
     public String getId(){
         return id;
@@ -26,7 +26,7 @@ public class TrackedObject {
     public String getDescription(){
         return description;
     }
-    public ArrayList<CloudPoint> getCoordinates(){
+    public CloudPoint[] getCoordinates(){
         return coordinates;
     }
     public int getTime(){

@@ -64,7 +64,7 @@ public class FusionSlam {
      */
     public ArrayList<CloudPoint> getGlobalCoords(TrackedObject obj){
         ArrayList<CloudPoint> result = new ArrayList<>();
-        ArrayList<CloudPoint> relativeCoords = obj.getCoordinates();
+        CloudPoint[] relativeCoords = obj.getCoordinates();
         for(CloudPoint point:relativeCoords){
 
         }

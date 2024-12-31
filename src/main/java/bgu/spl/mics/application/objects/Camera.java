@@ -10,6 +10,7 @@ import bgu.spl.mics.application.messages.DetectedObjectsEvent;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a camera sensor on the robot.
@@ -19,15 +20,21 @@ public class Camera {
 
     private int id;
     private int frequency;
-    private STATUS status;
-    private ArrayList<DetectedObject> detectedObjectList;
+    private STATUS status = STATUS.UP;
+    private ArrayList<StampedDetectedObjects> detectedObjectsList;
+    private String camera_key;
 
-    public Camera(int id, int frequency){
-        this.id = id;
-        this.frequency = frequency;
-        status = STATUS.DOWN;
-        detectedObjectList = new ArrayList<>();
-    }
+    public int getFrequency() {return frequency;}
+    public void setFrequency(int frequency) {this.frequency = frequency;}
+    public String getCamera_key() {return camera_key;}
+    public void setCamera_key(String camera_key) {this.camera_key = camera_key;}
+    public ArrayList<StampedDetectedObjects> getDetectedObjectsList() {return detectedObjectsList;}
+    public void setDetectedObjectsList(ArrayList<StampedDetectedObjects> detectedObjectsList) {this.detectedObjectsList = detectedObjectsList;}
+    public STATUS getStatus() {return status;}
+    public void setStatus(STATUS status) {this.status = status;}
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
+
     public void Up(){
         this.status = STATUS.UP;
     }
@@ -40,49 +47,27 @@ public class Camera {
     /*
     return Null if there is error
      */
+
     public DetectedObjectsEvent handleTick(int time){
-        detectedObjectList = getDetectedObjects(time);
-        for(DetectedObject obj : detectedObjectList){
-            if(obj.getId().equals("ERROR")){
-                return null;
+
+        for(StampedDetectedObjects sdo : detectedObjectsList){
+            if(sdo.time == time){
+                return new DetectedObjectsEvent(camera_key, sdo, time + frequency);
             }
         }
-        StampedDetectedObjects result = new StampedDetectedObjects(time, detectedObjectList);
-        return new DetectedObjectsEvent("camera",result, time +frequency);
+        return new DetectedObjectsEvent(camera_key, new StampedDetectedObjects(time), time + frequency);
 
+
+//        detectedObjectsList = getDetectedObjects(time);
+//        for(DetectedObject obj : detectedObjectsList){
+//            if(obj.getId().equals("ERROR")){
+//                return null;
+//            }
+//        }
+//        StampedDetectedObjects result = new StampedDetectedObjects(time, detectedObjectList);
+//        return new DetectObjectsEvent("camera",result, time +frequency);
 
     }
     /*
     returns empty list if no objects detected
      */
-    private ArrayList<DetectedObject> getDetectedObjects(int time){
-        Gson gson = new Gson();
-        String fileName = "camera_data.json";
-        ArrayList<DetectedObject> result = new ArrayList<>();
-        String cameraName = String.format("camera%d", this.id);
-        try (FileReader fileReader = new FileReader(fileName)){
-            JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
-            JsonArray camera = jsonObject.getAsJsonArray(cameraName);
-            for(JsonElement element : camera){
-                JsonObject detectedObject = element.getAsJsonObject();
-                if(detectedObject.get("time").getAsInt() == time){
-                    JsonArray objectsArray = detectedObject.getAsJsonArray("detectedObjects");
-                    for (JsonElement objectElement : objectsArray) {
-                        JsonObject object = objectElement.getAsJsonObject();
-                        String id = object.get("id").getAsString();
-                        String description = object.get("description").getAsString();
-                        result.add(new DetectedObject(id, description));
-                    }
-                }
-                else if(detectedObject.get("time").getAsInt() > time)
-                    break;
-            }
-
-        }
-        catch (Exception e){
-
-        }
-        return result;
-    }
-
-}
