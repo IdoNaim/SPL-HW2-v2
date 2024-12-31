@@ -36,4 +36,7 @@ public class StampedDetectedObjects {
     public int getTime(){
         return time;
     }
+    public ArrayList<DetectedObject> getObjectsArray(){
+        return detectedObjects;
+    }
 }

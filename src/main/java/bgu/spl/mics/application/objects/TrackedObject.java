@@ -32,7 +32,9 @@ public class TrackedObject {
     public int getTime(){
         return time;
     }
-
+    public boolean isError(){
+        return id.equals("ERROR");
+    }
 
 
 }

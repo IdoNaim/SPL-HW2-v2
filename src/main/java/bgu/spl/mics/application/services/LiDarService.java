@@ -4,6 +4,7 @@ import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.LiDarWorkerTracker;
+import bgu.spl.mics.application.objects.STATUS;
 
 /**
  * LiDarService is responsible for processing data from the LiDAR sensor and
@@ -36,6 +37,7 @@ public class LiDarService extends MicroService {
         // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
             //TODO: what to do here?
+            TrackedObjectsEvent t = liDarWorkerTracker.handleTick(c.getCurrTime());
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
             liDarWorkerTracker.Down();
@@ -54,9 +56,15 @@ public class LiDarService extends MicroService {
                 }
             }
             else{
-                complete(e, false);
-                liDarWorkerTracker.Error();
-                sendBroadcast(new CrashedBroadcast(getName(),"LiDar disconnected"));
+                if(liDarWorkerTracker.getStatus() == STATUS.ERROR){
+                    complete(e, false);
+                    sendBroadcast(new CrashedBroadcast(getName(), "LiDar disconnected"));
+                    terminate();
+                }
+                else{
+                    sendBroadcast(new TerminatedBroadcast(getName()));
+                    terminate();
+                }
             }
         });
         liDarWorkerTracker.Up();
