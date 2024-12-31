@@ -19,6 +19,9 @@ public class DetectedObject {
     public String getDescription(){
         return description;
     }
+    public boolean isError(){
+        return id.equals("ERROR");
+    }
 
 
 }

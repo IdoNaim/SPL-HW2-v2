@@ -38,6 +38,21 @@ public class LiDarService extends MicroService {
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
             //TODO: what to do here?
             TrackedObjectsEvent t = liDarWorkerTracker.handleTick(c.getCurrTime());
+            if(t != null){
+                if(!t.getTrackedObjects().isEmpty()){
+                    sendEvent(t);
+                }
+            }
+            else{
+                if(liDarWorkerTracker.getStatus() == STATUS.ERROR){
+                    sendBroadcast(new CrashedBroadcast(getName(), "LiDar disconnected"));
+                    terminate();
+                }
+                else{
+                    sendBroadcast(new TerminatedBroadcast(getName()));
+                    terminate();
+                }
+            }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
             liDarWorkerTracker.Down();

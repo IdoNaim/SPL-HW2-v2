@@ -20,6 +20,7 @@ public class LiDarWorkerTracker {
     private STATUS status;
     private ArrayList<TrackedObject> lastTrackedObjects;
     private ArrayList<TrackedObject> pendingList;
+    //private ArrayList<DetectedObjectsEvent> pendingList;
     private  int currentTick;
     private ArrayList<TrackedObject> allTrackedObjects;
 
@@ -80,9 +81,8 @@ public class LiDarWorkerTracker {
             }
             return new TrackedObjectsEvent("LiDarWorkerTracker"+id, new ArrayList<>());
         }
-
-
     }
+    /*
     public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e){
         lastTrackedObjects = getTrackedObjects(e.getDetectedObjects());
         if(lastTrackedObjects == null){
@@ -94,7 +94,7 @@ public class LiDarWorkerTracker {
             }
         }
         return new TrackedObjectsEvent("LidarWorkerTracker", lastTrackedObjects);
-    }
+    }*/
     /*
     returns empty list if no detection was made
     return null if Detected objects dont match Tracked objects
@@ -112,6 +112,22 @@ public class LiDarWorkerTracker {
     public ArrayList<TrackedObject> getLastTrackedObjects() {return lastTrackedObjects;}
     public void setLastTrackedObjects(ArrayList<TrackedObject> lastTrackedObjects) {this.lastTrackedObjects = lastTrackedObjects;}
 
+    /*public TrackedObjectsEvent handleTick(int time){
+        currentTick = time;
+        if(getAllTrackedObjects().isEmpty()){
+            return null;
+        }
+        ArrayList<TrackedObject> result = new ArrayList<>();
+        for(DetectedObjectsEvent e: pendingList){
+            if(e.getDetectionTime()+frequency <= time){
+                ArrayList<DetectedObject> list =e.getDetectedObjects().getObjectsArray();
+                ArrayList<TrackedObject> allTracked = getAllTrackedObjects();
+                for(DetectedObject obj : list){
+                    for()
+                }
+            }
+        }
+    }*/
     public TrackedObjectsEvent handleTick(int time){
         currentTick = time;
         if(getAllTrackedObjects().size() == 0){
