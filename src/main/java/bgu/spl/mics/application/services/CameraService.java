@@ -8,6 +8,8 @@ import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
 
+import java.util.List;
+
 /**
  * CameraService is responsible for processing data from the camera and
  * sending DetectObjectsEvents to LiDAR workers.
@@ -48,6 +50,15 @@ public class CameraService extends MicroService {
             else{
                 camera.Error();
                 sendBroadcast(new CrashedBroadcast(getName(),"Camera Disconnected"));
+/*
+            List<DetectedObjectsEvent> eventList = camera.handleTick(c.getCurrTime());
+            for(DetectedObjectsEvent event : eventList) {
+                Future<Boolean> future = sendEvent(event);
+                if(!future.get()){
+                    // TODO: Crash
+                }
+                */
+
             }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{

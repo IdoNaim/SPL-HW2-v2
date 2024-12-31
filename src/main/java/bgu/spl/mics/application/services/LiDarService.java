@@ -22,7 +22,7 @@ public class LiDarService extends MicroService {
      */
     public LiDarService(LiDarWorkerTracker LiDarWorkerTracker) {
         super("Lidar");
-        this.liDarWorkerTracker =LiDarWorkerTracker;
+        this.liDarWorkerTracker = LiDarWorkerTracker;
         // TODO Implement this
     }
 

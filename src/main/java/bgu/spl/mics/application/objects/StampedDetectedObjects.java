@@ -18,6 +18,10 @@ public class StampedDetectedObjects {
         this.time = time;
         this.detectedObjects = new ArrayList<>();
     }
+    public StampedDetectedObjects(int time, ArrayList<DetectedObject> list){
+        this.time = time;
+        this.detectedObjects = list;
+    }
 
     public boolean isEmpty(){
         return detectedObjects.isEmpty();
