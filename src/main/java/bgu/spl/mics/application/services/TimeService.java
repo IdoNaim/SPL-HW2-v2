@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 
 /**
@@ -40,6 +41,7 @@ public class TimeService extends MicroService {
                 Thread.sleep(getSpeed());
             }
             terminate();
+            sendBroadcast( new TerminatedBroadcast(getName()));
             Thread.currentThread().interrupt();
         }catch (InterruptedException e){
             e.printStackTrace();
