@@ -32,11 +32,21 @@ public class GPSIMU {
     public PoseEvent handleTick(int time){
         currentTick = time;
         Pose currPose = getPose(time);
+        //TODO: delete this print
+        if(currPose == null){
+            System.out.println("null pose was detected");
+        }
+        //
         PoseList.add(currPose);
         return new PoseEvent("GPSIMU", currPose);
     }
     public Pose getPose(int time){
-        //TODO: implement with Gson
+        for(Pose p: PoseList){
+            if(p.getTime()== time){
+                return p;
+            }
+        }
+        return null;
     }
 
 

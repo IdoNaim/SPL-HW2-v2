@@ -17,5 +17,7 @@ public class Pose {
         this.yaw = yaw;
         this.Time = Time;
     }
-
+    public int getTime(){
+        return this.Time;
+    }
 }
