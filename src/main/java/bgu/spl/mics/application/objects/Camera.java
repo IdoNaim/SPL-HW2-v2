@@ -116,6 +116,14 @@ public class Camera {
         }
         return result;
     */
+
+
+    /**
+     * returns DetectedObjectEvent.
+     * if no objects are detected at tick-frequency return Event with empty StampedDetectedObjects.
+     * if no more data, returns null.
+     * if error, returns null and changes Status to ERROR.
+     */
     public DetectedObjectsEvent handleTick(int time){
         if(detectedObjectsList.size() == 0){
             return null;
@@ -123,6 +131,10 @@ public class Camera {
         for(int i = 0; i < detectedObjectsList.size() ; i++){
             StampedDetectedObjects detectedObjects = detectedObjectsList.get(i);
             if(detectedObjects.getTime() + frequency == time){
+                if(detectedObjects.isError()){
+                    setStatus(STATUS.ERROR);
+                    return null;
+                }
                 detectedObjectsList.remove(detectedObjects);
                 return new DetectedObjectsEvent(camera_key,detectedObjects,detectedObjects.getTime());
             }

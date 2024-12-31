@@ -7,6 +7,7 @@ import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
+import bgu.spl.mics.application.objects.STATUS;
 
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class CameraService extends MicroService {
         super("Camera");
         this.camera = camera;
     }
-
     /**
      * Initializes the CameraService.
      * Registers the service to handle TickBroadcasts and sets up callbacks for sending
@@ -42,14 +42,17 @@ public class CameraService extends MicroService {
             if(e != null){
                 if(!e.getDetectedObjects().isEmpty()) {
                     Future<Boolean> f = sendEvent(e);
-                    //Boolean b = f.get();
-                    //if(b !=null)
-                    //complete(e, b)
                 }
             }
             else{
-                camera.Error();
-                sendBroadcast(new CrashedBroadcast(getName(),"Camera Disconnected"));
+                if(camera.getStatus() == STATUS.ERROR) {
+                    sendBroadcast(new CrashedBroadcast(getName(), "Camera Disconnected"));
+                    terminate();
+                }
+                else{
+                    sendBroadcast(new TerminatedBroadcast(getName()));
+                    terminate();
+                }
 /*
             List<DetectedObjectsEvent> eventList = camera.handleTick(c.getCurrTime());
             for(DetectedObjectsEvent event : eventList) {

@@ -22,7 +22,14 @@ public class StampedDetectedObjects {
         this.time = time;
         this.detectedObjects = list;
     }
-
+    public boolean isError(){
+        for (DetectedObject obj : detectedObjects){
+            if(obj.getId().equals("ERROR")){
+                return true;
+            }
+        }
+        return false;
+    }
     public boolean isEmpty(){
         return detectedObjects.isEmpty();
     }
