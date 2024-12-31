@@ -16,12 +16,8 @@ public class FusionSlam {
 
     ArrayList<LandMark> landmarks;
     ArrayList<Pose> Poses;
-
-    // TODO: Constructor? im not sure needed because of singleton
-
     // Singleton instance holder
     private static class FusionSlamHolder {
-        // TODO: Implement singleton instance logic.
         private static FusionSlam instance = new FusionSlam();
     }
     private FusionSlam(){
