@@ -36,6 +36,11 @@ public class PoseService extends MicroService {
             if (e != null){
                 sendEvent(e);
             }
+            else{
+                gps.Down();
+                sendBroadcast(new TerminatedBroadcast(getName()));
+                terminate();
+            }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
             gps.Down();

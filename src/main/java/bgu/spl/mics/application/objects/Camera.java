@@ -124,6 +124,8 @@ public class Camera {
      * if no more data, returns null.
      * if error, returns null and changes Status to ERROR.
      */
+
+    /// Make more efficient
     public DetectedObjectsEvent handleTick(int time){
         if(detectedObjectsList.size() == 0){
             return null;

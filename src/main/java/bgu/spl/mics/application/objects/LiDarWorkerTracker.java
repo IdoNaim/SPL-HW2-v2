@@ -18,20 +18,12 @@ public class LiDarWorkerTracker {
     private int id;
     private int frequency;
     private STATUS status;
-    private ArrayList<TrackedObject> lastTrackedObjects;
+    private ArrayList<TrackedObject> lastTrackedObjects = new ArrayList<>();
     private ArrayList<TrackedObject> pendingList;
     //private ArrayList<DetectedObjectsEvent> pendingList;
     private  int currentTick;
-    private ArrayList<TrackedObject> allTrackedObjects;
+    private LiDarDataBase ldb = LiDarDataBase.getInstance();
 
-    public LiDarWorkerTracker(int id, int frequency){
-        this.id = id;
-        this.frequency = frequency;
-        status = STATUS.DOWN;
-        lastTrackedObjects = new ArrayList<>();
-        pendingList = new ArrayList<>();
-        currentTick =0;
-    }
 
     public void Up(){
         this.status = STATUS.UP;
@@ -42,46 +34,77 @@ public class LiDarWorkerTracker {
     public void Error(){
         status = STATUS.ERROR;
     }
+
+    public TrackedObject getTrackedObject(String id, int time){
+        return ldb.getTrackedObject(id, time);
+    }
+
     /*
        return null if there is error
      */
-    public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e){
-        if(getAllTrackedObjects().size() == 0){
+    public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e) {
+        if (ldb.isEmpty()) {
             return null;
         }
         ArrayList<DetectedObject> list = e.getDetectedObjects().getObjectsArray();
-        if(e.getDetectionTime()+ this.frequency <= currentTick){
-            ArrayList<TrackedObject> trackedObjects = new ArrayList<>();
-            ArrayList<TrackedObject> allObjects = getAllTrackedObjects();
-            for(DetectedObject obj: list){
-                boolean found = false;
-                for(int i= 0; i< allObjects.size() && !found; i++){
-                    TrackedObject obj2 = allObjects.get(i);
-                    if(obj2.getId().equals("ERROR")){
-                        setStatus(STATUS.ERROR);
-                        return null;
-                    }
-                    if(obj.getId().equals(obj2.getId()) && e.getDetectionTime() == obj2.getTime()){
-                        trackedObjects.add(obj2);
-                        allObjects.remove(obj2);
-                    }
+        if (e.getDetectionTime() + this.frequency <= currentTick) {
+            ArrayList<TrackedObject> result = new ArrayList<>();
+
+            for (DetectedObject obj : list) {
+                TrackedObject obj2 = ldb.getTrackedObject(obj.id, e.getDetectionTime());
+                if (obj2 != null) {
+                    result.add(obj2);
+                } else {
+                    setStatus(STATUS.ERROR);
+                    return null;
                 }
             }
-            return new TrackedObjectsEvent("LiDarWorkerTracker"+id,trackedObjects);
-        }
-        else{
-            ArrayList<TrackedObject> allObjects = getAllTrackedObjects();
-            for(DetectedObject obj : list){
-                for(TrackedObject obj2: allObjects){
-                    if(obj.getId().equals(obj2.getId()) && e.getDetectionTime() == obj2.getTime()){
-                        pendingList.add(obj2);
-                        allObjects.remove(obj2);
-                    }
+            if(!result.isEmpty())
+                lastTrackedObjects = result;
+            return new TrackedObjectsEvent("LiDarWorkerTracker" + id, result);
+        } else {
+            for (DetectedObject obj : list) {
+                TrackedObject obj2 = ldb.getTrackedObject(obj.id, e.getDetectionTime());
+                if (obj2 != null) {
+                    pendingList.add(obj2);
+                } else {
+                    setStatus(STATUS.ERROR);
+                    return null;
                 }
             }
-            return new TrackedObjectsEvent("LiDarWorkerTracker"+id, new ArrayList<>());
         }
+        return new TrackedObjectsEvent("LiDarWorkerTracker"+id, new ArrayList<>());
     }
+
+//            for(DetectedObject obj: list){
+//                boolean found = false;
+//                for(int i= 0; i< allObjects.size() && !found; i++){
+//                    TrackedObject obj2 = allObjects.get(i);
+//                    if(obj2.getId().equals("ERROR")){
+//                        setStatus(STATUS.ERROR);
+//                        return null;
+//                    }
+//                    if(obj.getId().equals(obj2.getId()) && e.getDetectionTime() == obj2.getTime()){
+//                        trackedObjects.add(obj2);
+//                        allObjects.remove(obj2);
+//                    }
+//                }
+//            }
+//            return new TrackedObjectsEvent("LiDarWorkerTracker"+id, result);
+//        }
+//        else{
+//            ArrayList<TrackedObject> allObjects = getAllTrackedObjects();
+//            for(DetectedObject obj : list){
+//                for(TrackedObject obj2: allObjects){
+//                    if(obj.getId().equals(obj2.getId()) && e.getDetectionTime() == obj2.getTime()){
+//                        pendingList.add(obj2);
+//                        allObjects.remove(obj2);
+//                    }
+//                }
+//            }
+//            return new TrackedObjectsEvent("LiDarWorkerTracker"+id, new ArrayList<>());
+//        }
+//    }
     /*
     public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e){
         lastTrackedObjects = getTrackedObjects(e.getDetectedObjects());
@@ -99,9 +122,6 @@ public class LiDarWorkerTracker {
     returns empty list if no detection was made
     return null if Detected objects dont match Tracked objects
     */
-    public ArrayList<TrackedObject> getTrackedObjects(StampedDetectedObjects objects){
-        return null; //TODO: implement
-    }
 
     public int getId() {return id;}
     public void setId(int id) {this.id = id;}
@@ -130,12 +150,12 @@ public class LiDarWorkerTracker {
     }*/
     public TrackedObjectsEvent handleTick(int time){
         currentTick = time;
-        if(getAllTrackedObjects().size() == 0){
+        if(ldb.isEmpty() && pendingList.isEmpty()){
             return null;
         }
         ArrayList<TrackedObject> result = new ArrayList<>();
         for(TrackedObject obj :pendingList){
-            if(obj.getTime() +this.frequency <= time){
+            if(obj.getTime() + this.frequency <= time){
                 if(obj.isError()){
                     setStatus(STATUS.ERROR);
                     return null;
@@ -144,10 +164,8 @@ public class LiDarWorkerTracker {
                 pendingList.remove(obj);
             }
         }
-        lastTrackedObjects = result;
+        if(!result.isEmpty())
+            lastTrackedObjects = result;
         return new TrackedObjectsEvent("LidarWorkerTracker"+id,result);
-    }
-    public ArrayList<TrackedObject> getAllTrackedObjects(){
-        return allTrackedObjects;
     }
 }

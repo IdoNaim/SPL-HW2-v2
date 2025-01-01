@@ -76,10 +76,6 @@ public class LiDarService extends MicroService {
                     sendBroadcast(new CrashedBroadcast(getName(), "LiDar disconnected"));
                     terminate();
                 }
-                else{
-                    sendBroadcast(new TerminatedBroadcast(getName()));
-                    terminate();
-                }
             }
         });
         liDarWorkerTracker.Up();

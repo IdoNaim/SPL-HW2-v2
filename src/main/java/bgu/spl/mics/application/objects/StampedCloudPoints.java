@@ -10,6 +10,11 @@ public class StampedCloudPoints {
 
     String id;
     int time;
+
+    public ArrayList<List<Double>> getCloudPoints() {
+        return cloudPoints;
+    }
+
     ArrayList<List<Double>> cloudPoints;
 
 

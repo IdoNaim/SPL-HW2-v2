@@ -63,9 +63,12 @@ public class GurionRockRunner {
             JsonArray camerasArray = config.getAsJsonObject("Cameras").getAsJsonArray("CamerasConfigurations");
             Type cameraListType = new TypeToken<List<Camera>>() {}.getType();
             cameraList = gson.fromJson(camerasArray, cameraListType);
+
+            JsonObject cameraData = gson.fromJson(cameraReader, JsonObject.class);
+            Type StampedDetectedObjectsListType = new TypeToken<ArrayList<StampedDetectedObjects>>() {}.getType();
             for(Camera camera : cameraList) {
-                Type StampedDetectedObjectsType = new TypeToken<ArrayList<StampedDetectedObjects>>() {}.getType();
-                camera.setDetectedObjectsList(gson.fromJson(cameraReader,StampedDetectedObjectsType));
+                JsonArray temp = cameraData.getAsJsonObject(camera.getCamera_key()).getAsJsonArray();
+                camera.setDetectedObjectsList(gson.fromJson(temp, StampedDetectedObjectsListType));
             }
         }
         catch (Exception e){
@@ -83,10 +86,12 @@ public class GurionRockRunner {
             JsonArray lidarsArray = config.getAsJsonObject("LidarWorkers").getAsJsonArray("LidarConfigurations");
             Type lidarListType = new TypeToken<List<LiDarWorkerTracker>>() {}.getType();
             lidarList = gson.fromJson(lidarsArray, lidarListType);
-            for(LiDarWorkerTracker lidar : lidarList) {
-                Type StampedCloudPointsType = new TypeToken<ArrayList<StampedCloudPoints>>() {}.getType();
-                lidar.setLastTrackedObjects(gson.fromJson(lidarReader,StampedCloudPointsType));
-            }
+
+            Type StampedCloudPointsListType = new TypeToken<ArrayList<StampedCloudPoints>>() {}.getType();
+
+            JsonArray temp = gson.fromJson(lidarReader,JsonArray.class);
+            ArrayList<StampedCloudPoints> cloudPoints = gson.fromJson(temp, StampedCloudPointsListType);
+            LiDarDataBase.getInstance().setCloudPoints(cloudPoints);
         }
         catch (Exception e) {
 

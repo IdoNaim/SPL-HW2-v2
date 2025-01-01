@@ -19,6 +19,7 @@ public class GPSIMU {
         status = STATUS.DOWN;
         PoseList = new ArrayList<>();
     }
+
     public void Up(){
         this.status = STATUS.UP;
     }
@@ -32,17 +33,15 @@ public class GPSIMU {
     public PoseEvent handleTick(int time){
         currentTick = time;
         Pose currPose = getPose(time);
-        //TODO: delete this print
         if(currPose == null){
-            System.out.println("null pose was detected");
+            return null;
         }
-        //
-        PoseList.add(currPose);
         return new PoseEvent("GPSIMU", currPose);
     }
+
     public Pose getPose(int time){
         for(Pose p: PoseList){
-            if(p.getTime()== time){
+            if(p.getTime() == time){
                 return p;
             }
         }

@@ -17,6 +17,7 @@ public class LandMark {
         this.Description = Description;
         this.Coordinates = Coordinates;
     }
+
     public String getId(){
         return id;
     }
