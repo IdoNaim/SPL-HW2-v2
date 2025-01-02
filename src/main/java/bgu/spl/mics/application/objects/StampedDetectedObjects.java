@@ -10,8 +10,7 @@ import java.util.List;
 public class StampedDetectedObjects {
 
     private int time;
-
-    ArrayList<DetectedObject> detectedObjects;
+    private ArrayList<DetectedObject> detectedObjects;
 
 
     public StampedDetectedObjects(int time) {

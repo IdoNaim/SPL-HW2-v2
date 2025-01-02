@@ -41,10 +41,10 @@ public class GurionRockRunner {
             config = gson.fromJson(configReader, JsonObject.class);
             List<Camera> cameraList = GurionRockRunner.CamerasConfiguration(config,gson);
             List<LiDarWorkerTracker> lidarList = GurionRockRunner.LidarConfiguration(config,gson);
-            List<Pose> poseList = GurionRockRunner.PoseConfiguration(config,gson);
+            ArrayList<Pose> poseList = GurionRockRunner.PoseConfiguration(config,gson);
             int TickTime = config.get("TickTime").getAsInt();
             int Duration = config.get("Duration").getAsInt();
-
+            GPSIMU gps = new GPSIMU(0, poseList);
 
 
         }
@@ -100,8 +100,8 @@ public class GurionRockRunner {
         return lidarList;
     }
 
-    private static List<Pose> PoseConfiguration(JsonObject config, Gson gson) {
-        List<Pose> poseList = new ArrayList<>();
+    private static ArrayList<Pose> PoseConfiguration(JsonObject config, Gson gson) {
+        ArrayList<Pose> poseList = new ArrayList<>();
         String poseDataPath = config.get("poseJsonFile").getAsString();
 
         try (FileReader poseReader = new FileReader(poseDataPath)) {
