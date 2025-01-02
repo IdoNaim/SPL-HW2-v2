@@ -77,11 +77,14 @@ public class FusionSlam {
         }
         return result;
     }
+    /**
+     argument obj must do: obj.getTime() <= lastPoseTick
+     */
     public void updateLandmarks(TrackedObject obj){
         boolean found = false;
         int index = 0;
         for (int i = 0; i < landmarks.size() && !found; i++) {
-            if (landmarks.get(i).getId() == obj.getId()) {
+            if (landmarks.get(i).getId().equals(obj.getId())) {
                 found = true;
                 index = i;
             }
