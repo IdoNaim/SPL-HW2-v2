@@ -43,8 +43,10 @@ public class PoseService extends MicroService {
             }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
-            gps.Down();
-            terminate();
+            if(c.getSender().equals("Time")) {
+                gps.Down();
+                terminate();
+            }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
             gps.Down();

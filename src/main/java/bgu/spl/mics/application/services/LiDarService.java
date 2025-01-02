@@ -55,8 +55,10 @@ public class LiDarService extends MicroService {
             }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
-            liDarWorkerTracker.Down();
-            terminate();
+            if(c.getSender().equals("Time")) {
+                liDarWorkerTracker.Down();
+                terminate();
+            }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
             liDarWorkerTracker.Down();

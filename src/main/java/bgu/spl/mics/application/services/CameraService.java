@@ -65,8 +65,10 @@ public class CameraService extends MicroService {
             }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
-            camera.Down();
-            terminate();
+            if(c.getSender().equals("Time")) {
+                camera.Down();
+                terminate();
+            }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
             camera.Down();
