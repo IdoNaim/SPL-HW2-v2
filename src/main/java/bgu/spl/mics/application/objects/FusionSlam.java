@@ -98,7 +98,7 @@ public class FusionSlam {
             }
         }
         else{
-            StatisticalFolder.getInstance().setNumTrackedObjects(StatisticalFolder.getInstance().getNumTrackedObjects()+1);
+            StatisticalFolder.getInstance().setNumLandmarks(StatisticalFolder.getInstance().getNumLandmarks()+1);
             landmarks.add(new LandMark(obj.getId(), obj.getDescription(),realCoords));
         }
     }
