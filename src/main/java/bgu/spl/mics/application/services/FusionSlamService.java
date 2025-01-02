@@ -37,9 +37,19 @@ public class FusionSlamService extends MicroService {
             fusionSlam.handleTick(c.getCurrTime());
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
-            terminate();
+            if(c.getSender().equals("Time")) {
+                sendBroadcast(new TerminatedBroadcast(getName()));
+                terminate();
+            }
+            else{
+                if(fusionSlam.handleTerminated(c)){
+                    sendBroadcast(new TerminatedBroadcast(getName()));
+                    terminate();
+                }
+            }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
+            sendBroadcast(new TerminatedBroadcast(getName()));
             terminate();
         });
         subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent e)->{

@@ -34,9 +34,7 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
-        // TODO Implement this
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
-            //TODO: what to do here?
             TrackedObjectsEvent t = liDarWorkerTracker.handleTick(c.getCurrTime());
             if(t != null){
                 if(!t.getTrackedObjects().isEmpty()){
@@ -55,11 +53,15 @@ public class LiDarService extends MicroService {
             }
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
-            liDarWorkerTracker.Down();
-            terminate();
+            if(c.getSender().equals("Time")) {
+                liDarWorkerTracker.Down();
+                sendBroadcast(new TerminatedBroadcast(getName()));
+                terminate();
+            }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
             liDarWorkerTracker.Down();
+            sendBroadcast(new TerminatedBroadcast(getName()));
             terminate();
         });
         subscribeEvent(DetectedObjectsEvent.class, (DetectedObjectsEvent e)->{
