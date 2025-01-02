@@ -38,10 +38,18 @@ public class FusionSlamService extends MicroService {
         });
         subscribeBroadcast(TerminatedBroadcast.class, (TerminatedBroadcast c)->{
             if(c.getSender().equals("Time")) {
+                sendBroadcast(new TerminatedBroadcast(getName()));
                 terminate();
+            }
+            else{
+                if(fusionSlam.handleTerminated(c)){
+                    sendBroadcast(new TerminatedBroadcast(getName()));
+                    terminate();
+                }
             }
         });
         subscribeBroadcast(CrashedBroadcast.class, (CrashedBroadcast c)->{
+            sendBroadcast(new TerminatedBroadcast(getName()));
             terminate();
         });
         subscribeEvent(TrackedObjectsEvent.class, (TrackedObjectsEvent e)->{
