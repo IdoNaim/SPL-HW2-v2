@@ -61,6 +61,7 @@ public class LiDarWorkerTracker {
             }
             if(!result.isEmpty())
                 lastTrackedObjects = result;
+            StatisticalFolder.getInstance().setNumTrackedObjects(StatisticalFolder.getInstance().numTrackedObjects + result.size());
             return new TrackedObjectsEvent("LiDarWorkerTracker" + id, result);
         } else {
             for (DetectedObject obj : list) {

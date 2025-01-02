@@ -52,5 +52,6 @@ public class PoseService extends MicroService {
             gps.Down();
             terminate();
         });
+        gps.Up();
     }
 }

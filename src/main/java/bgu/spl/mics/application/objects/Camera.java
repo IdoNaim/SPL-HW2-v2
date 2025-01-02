@@ -25,6 +25,7 @@ public class Camera {
     private STATUS status = STATUS.UP;
     private ArrayList<StampedDetectedObjects> detectedObjectsList = new ArrayList<StampedDetectedObjects>();
     private String camera_key;
+    private StampedDetectedObjects lastSDO;
 
     public int getFrequency() {
         return frequency;
@@ -127,17 +128,18 @@ public class Camera {
 
     /// Make more efficient
     public DetectedObjectsEvent handleTick(int time){
-        if(detectedObjectsList.size() == 0){
+        if(detectedObjectsList.isEmpty()){
             return null;
         }
-        for(int i = 0; i < detectedObjectsList.size() ; i++){
-            StampedDetectedObjects detectedObjects = detectedObjectsList.get(i);
+        for(StampedDetectedObjects detectedObjects : detectedObjectsList){
             if(detectedObjects.getTime() + frequency == time){
                 if(detectedObjects.isError()){
                     setStatus(STATUS.ERROR);
                     return null;
                 }
                 detectedObjectsList.remove(detectedObjects);
+                lastSDO = detectedObjects;
+                StatisticalFolder.getInstance().setNumDetectedObjects(StatisticalFolder.getInstance().numDetectedObjects + detectedObjects.getObjectsArray().size());
                 return new DetectedObjectsEvent(camera_key,detectedObjects,detectedObjects.getTime());
             }
         }
