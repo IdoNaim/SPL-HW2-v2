@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * LiDarDataBase is a singleton class responsible for managing LiDAR data.
@@ -10,6 +11,8 @@ import java.util.List;
 public class LiDarDataBase {
 
     ArrayList<StampedCloudPoints> cloudPoints;
+    ///idea
+    //AtomicReference<ArrayList<StampedCloudPoints>> list;
 
     private static class LiDarDataBaseHolder {
         private static LiDarDataBase instance = new LiDarDataBase(new ArrayList<StampedCloudPoints>());
@@ -19,7 +22,7 @@ public class LiDarDataBase {
         this.cloudPoints = cloudPoints;
     }
 
-    public ArrayList<StampedCloudPoints> getCloudPoints() {
+    public synchronized ArrayList<StampedCloudPoints> getCloudPoints() {
         return cloudPoints;
     }
     public void setCloudPoints(ArrayList<StampedCloudPoints> cloudPoints) {
@@ -30,17 +33,28 @@ public class LiDarDataBase {
         TrackedObject result = null;
         for(StampedCloudPoints cloudPoint : cloudPoints){
             if(cloudPoint.id.equals(id) && cloudPoint.time == time){
-                cloudPoints.remove(cloudPoint);
-                ArrayList<CloudPoint> cloudPointsList = new ArrayList<>();
-                for(List<Double> point : cloudPoint.getCloudPoints()){
-                    cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
+                synchronized (cloudPoints) {
+                    cloudPoints.remove(cloudPoint);
+                    ArrayList<CloudPoint> cloudPointsList = new ArrayList<>();
+                    for (List<Double> point : cloudPoint.getCloudPoints()) {
+                        cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
+                    }
+                    result = new TrackedObject(id, time, "", cloudPointsList);
                 }
-                result = new TrackedObject(id, time, "", cloudPointsList );
+                cloudPoints.notifyAll();
             }
         }
         return result;
     }
-
+    ///idea
+//    public void remove(StampedCloudPoints point){
+//        list.updateAndGet(
+//                list2->{ArrayList<StampedCloudPoints> newList = new ArrayList<>(list2);
+//                        newList.remove(point);
+//                        return newList;
+//                }
+//        );
+//    }
     public boolean isEmpty(){
         return cloudPoints.isEmpty();
     }
