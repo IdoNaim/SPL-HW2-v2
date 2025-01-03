@@ -19,7 +19,7 @@ public class LiDarDataBase {
         this.cloudPoints = cloudPoints;
     }
 
-    public ArrayList<StampedCloudPoints> getCloudPoints() {
+    public synchronized ArrayList<StampedCloudPoints> getCloudPoints() {
         return cloudPoints;
     }
     public void setCloudPoints(ArrayList<StampedCloudPoints> cloudPoints) {
@@ -30,12 +30,15 @@ public class LiDarDataBase {
         TrackedObject result = null;
         for(StampedCloudPoints cloudPoint : cloudPoints){
             if(cloudPoint.id.equals(id) && cloudPoint.time == time){
-                cloudPoints.remove(cloudPoint);
-                ArrayList<CloudPoint> cloudPointsList = new ArrayList<>();
-                for(List<Double> point : cloudPoint.getCloudPoints()){
-                    cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
+                synchronized (cloudPoints) {
+                    cloudPoints.remove(cloudPoint);
+                    ArrayList<CloudPoint> cloudPointsList = new ArrayList<>();
+                    for (List<Double> point : cloudPoint.getCloudPoints()) {
+                        cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
+                    }
+                    result = new TrackedObject(id, time, "", cloudPointsList);
                 }
-                result = new TrackedObject(id, time, "", cloudPointsList );
+                cloudPoints.notifyAll();
             }
         }
         return result;
