@@ -108,9 +108,11 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized void unregister(MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<Message> queue=services.remove(m);
-		for(Message message: queue){
-			if(message instanceof Event){
-				complete((Event)message, null);
+		if(queue != null) {
+			for (Message message : queue) {
+				if (message instanceof Event) {
+					complete((Event) message, null);
+				}
 			}
 		}
 
