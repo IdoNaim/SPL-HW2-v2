@@ -1,6 +1,8 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.*;
+import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -45,7 +47,30 @@ public class GurionRockRunner {
             int TickTime = config.get("TickTime").getAsInt();
             int Duration = config.get("Duration").getAsInt();
             GPSIMU gps = new GPSIMU(0, poseList);
-
+            ArrayList<MicroService> services = new ArrayList<>();
+            ArrayList<CameraService> cameraServices = new ArrayList<>();
+            for(Camera camera: cameraList){
+                CameraService cameraService = new CameraService(camera);
+                services.add(cameraService);
+            }
+            ArrayList<LiDarService> liDarServices = new ArrayList<>();
+            for(LiDarWorkerTracker lidar : lidarList){
+                LiDarService liDarService = new LiDarService(lidar);
+                services.add(liDarService);
+            }
+            PoseService poseService = new PoseService(gps);
+            FusionSlamService fusionSlamService = new FusionSlamService(FusionSlam.getInstance());
+            services.add(poseService);
+            FusionSlam.getInstance().setSensors(services.size());
+            services.add(fusionSlamService);
+            TimeService timeService = new TimeService(TickTime,Duration);
+            for(MicroService service: services){
+                Thread thread = new Thread(service);
+                thread.start();
+            }
+            Thread timeThread = new Thread(timeService);
+            timeThread.start();
+            //TODO:create output file
 
         }
         catch (Exception e) {

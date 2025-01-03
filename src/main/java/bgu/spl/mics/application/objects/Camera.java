@@ -139,7 +139,7 @@ public class Camera {
                 }
                 detectedObjectsList.remove(detectedObjects);
                 lastSDO = detectedObjects;
-                StatisticalFolder.getInstance().setNumDetectedObjects(StatisticalFolder.getInstance().numDetectedObjects + detectedObjects.getObjectsArray().size());
+                StatisticalFolder.getInstance().setNumDetectedObjects(StatisticalFolder.getInstance().getNumDetectedObjects() + detectedObjects.getObjectsArray().size());
                 return new DetectedObjectsEvent(camera_key,detectedObjects,detectedObjects.getTime());
             }
         }

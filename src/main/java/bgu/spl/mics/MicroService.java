@@ -178,7 +178,7 @@ public abstract class MicroService implements Runnable {
             }
         }
         getMessageBus().unregister(this);
-        sendBroadcast(new TerminatedBroadcast(getName()));
+        Thread.currentThread().interrupt();
     }
     private MessageBus getMessageBus(){
         return this.messageBus;
