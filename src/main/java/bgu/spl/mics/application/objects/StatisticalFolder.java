@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Holds statistical information about the system's operation.
@@ -9,20 +10,20 @@ import java.util.ArrayList;
  */
 public class StatisticalFolder {
 
-    int systemRuntime;
-    int numDetectedObjects;
-    int numTrackedObjects;
-    int numLandmarks;
+    AtomicInteger systemRuntime;
+    AtomicInteger numDetectedObjects;
+    AtomicInteger numTrackedObjects;
+    AtomicInteger numLandmarks;
 
     private static class StatisticalFolderHolder {
         private static StatisticalFolder instance = new StatisticalFolder();
     }
 
     private StatisticalFolder(){
-        systemRuntime = 0;
-        numDetectedObjects = 0;
-        numTrackedObjects = 0;
-        numLandmarks = 0;
+        systemRuntime = new AtomicInteger(0);
+        numDetectedObjects = new AtomicInteger(0);
+        numTrackedObjects = new AtomicInteger(0);
+        numLandmarks = new AtomicInteger(0);
     }
 
     public static StatisticalFolder getInstance(){
@@ -31,35 +32,55 @@ public class StatisticalFolder {
 
 
     public int getSystemRuntime() {
-        return systemRuntime;
+        return this.systemRuntime.get();
     }
 
     public int getNumDetectedObjects() {
-        return numDetectedObjects;
+        return numDetectedObjects.get();
     }
 
     public int getNumTrackedObjects() {
-        return numTrackedObjects;
+        return numTrackedObjects.get();
     }
 
     public int getNumLandmarks() {
-        return numLandmarks;
+        return numLandmarks.get();
     }
 
     public void setSystemRuntime(int systemRuntime) {
-        this.systemRuntime = systemRuntime;
+        int oldVal;
+        int newVal;
+        do{
+            oldVal = this.systemRuntime.get();
+            newVal = systemRuntime;
+        }while ((!this.systemRuntime.compareAndSet(oldVal,newVal)));
     }
 
     public void setNumDetectedObjects(int numDetectedObjects) {
-        this.numDetectedObjects = numDetectedObjects;
+        int oldVal;
+        int newVal;
+        do{
+            oldVal = this.numDetectedObjects.get();
+            newVal = numDetectedObjects;
+        }while ((!this.numDetectedObjects.compareAndSet(oldVal,newVal)));
     }
 
     public void setNumTrackedObjects(int numTrackedObjects) {
-        this.numTrackedObjects = numTrackedObjects;
+        int oldVal;
+        int newVal;
+        do{
+            oldVal = this.numTrackedObjects.get();
+            newVal = numTrackedObjects;
+        }while ((!this.numTrackedObjects.compareAndSet(oldVal,newVal)));
     }
 
     public void setNumLandmarks(int numLandmarks) {
-        this.numLandmarks = numLandmarks;
+        int oldVal;
+        int newVal;
+        do{
+            oldVal = this.numLandmarks.get();
+            newVal = numLandmarks;
+        }while ((!this.numLandmarks.compareAndSet(oldVal,newVal)));
     }
 
 
