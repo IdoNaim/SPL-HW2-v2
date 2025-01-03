@@ -21,12 +21,12 @@ public class MessageBusImpl implements MessageBus {
 	private static class SingletonHolder{
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
-	public static MessageBusImpl getInstance(){
+	public synchronized static MessageBusImpl getInstance(){
 		return SingletonHolder.instance;
 	}
 
 	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public synchronized <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<MicroService> queue = eventsSubscribers.get(type);
 		if(queue != null) {
@@ -39,7 +39,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+	public synchronized void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(type);
 		if(queue != null) {
@@ -51,7 +51,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public <T> void complete(Event<T> e, T result) {
+	public synchronized <T> void complete(Event<T> e, T result) {
 		// TODO Auto-generated method stub
 		Future f=  eventsResults.get(e);
 		if(f != null){
@@ -61,7 +61,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void sendBroadcast(Broadcast b) {
+	public synchronized void sendBroadcast(Broadcast b) {
 		// TODO Auto-generated method stub
 		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(b.getClass());
 		for(MicroService service: queue){
@@ -79,7 +79,7 @@ public class MessageBusImpl implements MessageBus {
 
 	
 	@Override
-	public <T> Future<T> sendEvent(Event<T> e) {
+	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		// TODO Auto-generated method stub
 		BlockingQueue<MicroService> queue = eventsSubscribers.get(e.getClass());
 		try {
@@ -97,7 +97,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void register(MicroService m) {
+	public synchronized void register(MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<Message> newQueue = new LinkedBlockingQueue<Message>();
 		services.putIfAbsent(m,newQueue);
@@ -105,7 +105,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public void unregister(MicroService m) {
+	public synchronized void unregister(MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<Message> queue=services.remove(m);
 		for(Message message: queue){
@@ -117,7 +117,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
+	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
 		try{
 			Message message = services.get(m).take();

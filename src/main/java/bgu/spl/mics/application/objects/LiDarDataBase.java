@@ -18,30 +18,24 @@ public class LiDarDataBase {
         private static LiDarDataBase instance = new LiDarDataBase(new ArrayList<StampedCloudPoints>());
     }
 
-    private LiDarDataBase(ArrayList<StampedCloudPoints>cloudPoints){
+    private LiDarDataBase(ArrayList<StampedCloudPoints> cloudPoints){
         this.cloudPoints = cloudPoints;
     }
 
-    public synchronized ArrayList<StampedCloudPoints> getCloudPoints() {
-        return cloudPoints;
-    }
     public void setCloudPoints(ArrayList<StampedCloudPoints> cloudPoints) {
         this.cloudPoints = cloudPoints;
     }
 
-    public TrackedObject getTrackedObject(String id, int time) {
+    public synchronized TrackedObject getTrackedObject(String id, int time) {
         TrackedObject result = null;
         for(StampedCloudPoints cloudPoint : cloudPoints){
             if(cloudPoint.id.equals(id) && cloudPoint.time == time){
-                synchronized (cloudPoints) {
                     cloudPoints.remove(cloudPoint);
                     ArrayList<CloudPoint> cloudPointsList = new ArrayList<>();
                     for (List<Double> point : cloudPoint.getCloudPoints()) {
                         cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
                     }
                     result = new TrackedObject(id, time, "", cloudPointsList);
-                }
-                cloudPoints.notifyAll();
             }
         }
         return result;
@@ -55,7 +49,7 @@ public class LiDarDataBase {
 //                }
 //        );
 //    }
-    public boolean isEmpty(){
+    public synchronized boolean isEmpty(){
         return cloudPoints.isEmpty();
     }
 
@@ -65,7 +59,7 @@ public class LiDarDataBase {
      *
      * @return The singleton instance of LiDarDataBase.
      */
-    public static LiDarDataBase getInstance() {
+    public synchronized static LiDarDataBase getInstance() {
         return LiDarDataBaseHolder.instance;
     }
 }
