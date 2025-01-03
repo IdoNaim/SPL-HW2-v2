@@ -2,6 +2,7 @@ package bgu.spl.mics.application.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * LiDarDataBase is a singleton class responsible for managing LiDAR data.
@@ -10,6 +11,8 @@ import java.util.List;
 public class LiDarDataBase {
 
     ArrayList<StampedCloudPoints> cloudPoints;
+    ///idea
+    //AtomicReference<ArrayList<StampedCloudPoints>> list;
 
     private static class LiDarDataBaseHolder {
         private static LiDarDataBase instance = new LiDarDataBase(new ArrayList<StampedCloudPoints>());
@@ -43,7 +46,15 @@ public class LiDarDataBase {
         }
         return result;
     }
-
+    ///idea
+//    public void remove(StampedCloudPoints point){
+//        list.updateAndGet(
+//                list2->{ArrayList<StampedCloudPoints> newList = new ArrayList<>(list2);
+//                        newList.remove(point);
+//                        return newList;
+//                }
+//        );
+//    }
     public boolean isEmpty(){
         return cloudPoints.isEmpty();
     }
