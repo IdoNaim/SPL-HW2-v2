@@ -31,6 +31,7 @@ public class PoseService extends MicroService {
     @Override
     protected void initialize() {
         // TODO Implement this
+        register();
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
             PoseEvent e = gps.handleTick(c.getCurrTime());
             if (e != null){

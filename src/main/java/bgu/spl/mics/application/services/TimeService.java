@@ -25,7 +25,7 @@ public class TimeService extends MicroService {
         super("Time");
         this.speed = (int) TimeUnit.SECONDS.toMillis((long)TickTime);
         this.duration = Duration;
-        this.ticks=0;
+        this.ticks=1;
         // TODO Implement this
     }
 
@@ -40,6 +40,7 @@ public class TimeService extends MicroService {
             while (getTicks() <= getDuration()) {
                 TickBroadcast b = new TickBroadcast(getName(), getTicks());
                 sendBroadcast(b);
+                System.out.println("currTick is "+ getTicks());
                 incTick();
                 Thread.sleep(getSpeed());
             }

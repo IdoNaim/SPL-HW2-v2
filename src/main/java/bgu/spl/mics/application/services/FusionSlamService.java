@@ -33,6 +33,7 @@ public class FusionSlamService extends MicroService {
     @Override
     protected void initialize() {
         // TODO Implement this
+        register();
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
             fusionSlam.handleTick(c.getCurrTime());
         });

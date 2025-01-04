@@ -34,6 +34,7 @@ public class LiDarService extends MicroService {
      */
     @Override
     protected void initialize() {
+        register();
         subscribeBroadcast(TickBroadcast.class,(TickBroadcast c) ->{
             TrackedObjectsEvent t = liDarWorkerTracker.handleTick(c.getCurrTime());
             if(t != null){

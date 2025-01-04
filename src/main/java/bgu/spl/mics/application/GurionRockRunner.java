@@ -48,12 +48,12 @@ public class GurionRockRunner {
             int Duration = config.get("Duration").getAsInt();
             GPSIMU gps = new GPSIMU(0, poseList);
             ArrayList<MicroService> services = new ArrayList<>();
-            ArrayList<CameraService> cameraServices = new ArrayList<>();
+            //ArrayList<CameraService> cameraServices = new ArrayList<>();
             for(Camera camera: cameraList){
                 CameraService cameraService = new CameraService(camera);
                 services.add(cameraService);
             }
-            ArrayList<LiDarService> liDarServices = new ArrayList<>();
+            //ArrayList<LiDarService> liDarServices = new ArrayList<>();
             for(LiDarWorkerTracker lidar : lidarList){
                 LiDarService liDarService = new LiDarService(lidar);
                 services.add(liDarService);
@@ -68,13 +68,14 @@ public class GurionRockRunner {
                 Thread thread = new Thread(service);
                 thread.start();
             }
+            Thread.currentThread().sleep(3000);
             Thread timeThread = new Thread(timeService);
             timeThread.start();
             //TODO:create output file
 
         }
         catch (Exception e) {
-
+            e.printStackTrace();
         }
 
 
@@ -92,12 +93,12 @@ public class GurionRockRunner {
             JsonObject cameraData = gson.fromJson(cameraReader, JsonObject.class);
             Type StampedDetectedObjectsListType = new TypeToken<ArrayList<StampedDetectedObjects>>() {}.getType();
             for(Camera camera : cameraList) {
-                JsonArray temp = cameraData.getAsJsonObject(camera.getCamera_key()).getAsJsonArray();
+                JsonArray temp = cameraData.getAsJsonArray(camera.getCamera_key());
                 camera.setDetectedObjectsList(gson.fromJson(temp, StampedDetectedObjectsListType));
             }
         }
         catch (Exception e){
-
+            e.printStackTrace();
         }
 
         return cameraList;
@@ -105,10 +106,10 @@ public class GurionRockRunner {
 
     private static List<LiDarWorkerTracker> LidarConfiguration(JsonObject config, Gson gson) {
         List<LiDarWorkerTracker> lidarList = new ArrayList<>();
-        String lidarDataPath = config.getAsJsonObject("LidarWorkers").get("lidars_data_path").getAsString();
+        String lidarDataPath = config.getAsJsonObject("LiDarWorkers").get("lidars_data_path").getAsString();
 
         try (FileReader lidarReader = new FileReader(lidarDataPath)) {
-            JsonArray lidarsArray = config.getAsJsonObject("LidarWorkers").getAsJsonArray("LidarConfigurations");
+            JsonArray lidarsArray = config.getAsJsonObject("LiDarWorkers").getAsJsonArray("LidarConfigurations");
             Type lidarListType = new TypeToken<List<LiDarWorkerTracker>>() {}.getType();
             lidarList = gson.fromJson(lidarsArray, lidarListType);
 
@@ -119,7 +120,7 @@ public class GurionRockRunner {
             LiDarDataBase.getInstance().setCloudPoints(cloudPoints);
         }
         catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return lidarList;
@@ -135,7 +136,7 @@ public class GurionRockRunner {
             poseList = gson.fromJson(poseArray, poseListType);
         }
         catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         return poseList;

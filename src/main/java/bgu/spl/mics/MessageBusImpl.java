@@ -24,28 +24,47 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized static MessageBusImpl getInstance(){
 		return SingletonHolder.instance;
 	}
+	private MessageBusImpl(){
+		eventsResults = new ConcurrentHashMap<>();
+		eventsSubscribers = new ConcurrentHashMap<>();
+		broadcastsSubscribers = new ConcurrentHashMap<>();
+		services = new ConcurrentHashMap<>();
+	}
 
 	@Override
-	public synchronized <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue = eventsSubscribers.get(type);
-		if(queue != null) {
-			try {
-				queue.put(m);
-			} catch (InterruptedException e) {
+		synchronized (eventsSubscribers) {
+			if(!eventsSubscribers.containsKey(type)){
+				eventsSubscribers.putIfAbsent(type, new LinkedBlockingQueue<>());
+			}
+			BlockingQueue<MicroService> queue = eventsSubscribers.get(type);
+			if (queue != null) {
+				try {
+					queue.put(m);
+					System.out.println(m.getName() + " subscribed to " + type.getName());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
 	}
 
 	@Override
-	public synchronized void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(type);
-		if(queue != null) {
-			try {
-				queue.put(m);
-			} catch (InterruptedException e) {
+		synchronized (broadcastsSubscribers) {
+			if(!broadcastsSubscribers.containsKey(type)){
+				broadcastsSubscribers.putIfAbsent(type, new LinkedBlockingQueue<>());
+			}
+			BlockingQueue<MicroService> queue = broadcastsSubscribers.get(type);
+			if (queue != null) {
+				try {
+					queue.put(m);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -61,20 +80,23 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public synchronized void sendBroadcast(Broadcast b) {
+	public void sendBroadcast(Broadcast b) {
 		// TODO Auto-generated method stub
-		BlockingQueue<MicroService> queue = broadcastsSubscribers.get(b.getClass());
-		for(MicroService service: queue){
-			BlockingQueue<Message> queue2 = services.get(service);
-			if(queue2!=null){
-				try {
-					queue2.put(b);
-				}catch(InterruptedException e){
-					//TODO: think what t put here
+		synchronized (broadcastsSubscribers) {
+			BlockingQueue<MicroService> queue = broadcastsSubscribers.get(b.getClass());
+			synchronized (services) {
+				for (MicroService service : queue) {
+					BlockingQueue<Message> queue2 = services.get(service);
+					if (queue2 != null) {
+						try {
+							queue2.put(b);
+						} catch (InterruptedException e) {
+							//TODO: think what t put here
+						}
+					}
 				}
 			}
 		}
-
 	}
 
 	

@@ -62,8 +62,9 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         //TODO: implement this.
-        callbacks.put(type,callback);
+        callbacks.putIfAbsent(type,callback);
         getMessageBus().subscribeEvent(type, this);
+        System.out.println(getName()+ " subscribed to " +type.getName());
 
     }
 
@@ -91,6 +92,7 @@ public abstract class MicroService implements Runnable {
         //TODO: implement this.
         callbacks.put(type, callback);
         getMessageBus().subscribeBroadcast(type, this);
+        System.out.println(getName()+ " subscribed to " +type.getName());
     }
 
     /**
@@ -107,7 +109,9 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
         //TODO: implement this.
+        System.out.println(getName()+ " sent event " +e.getClass().getName());
         return getMessageBus().sendEvent(e);
+
     }
 
     /**
@@ -119,6 +123,8 @@ public abstract class MicroService implements Runnable {
     protected final void sendBroadcast(Broadcast b) {
         //TODO: implement this.
         getMessageBus().sendBroadcast(b);
+        System.out.println(getName()+ " sent broadcast " +b.getClass().getName());
+
     }
 
     /**
@@ -147,6 +153,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
+        System.out.println(getName()+ " terminated");
         this.terminated = true;
     }
 
@@ -164,7 +171,9 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        System.out.println(getName()+ " started running");
         initialize();
+        System.out.println(getName() + " ended init");
         while (!terminated) {
             try {
                 Message m = getMessageBus().awaitMessage(this);
@@ -179,6 +188,9 @@ public abstract class MicroService implements Runnable {
         }
         getMessageBus().unregister(this);
         Thread.currentThread().interrupt();
+    }
+    public void register(){
+        getMessageBus().register(this);
     }
     private MessageBus getMessageBus(){
         return this.messageBus;
