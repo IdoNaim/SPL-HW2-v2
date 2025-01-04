@@ -41,10 +41,11 @@ public class TimeService extends MicroService {
                 TickBroadcast b = new TickBroadcast(getName(), getTicks());
                 sendBroadcast(b);
                 System.out.println("currTick is "+ getTicks());
+                Thread.sleep(getSpeed());
                 if(StatisticalFolder.getInstance().getError() != null)
                     break;
                 incTick();
-                Thread.sleep(getSpeed());
+//                Thread.sleep(getSpeed());
             }
             terminate();
             sendBroadcast( new TerminatedBroadcast(getName()));

@@ -30,6 +30,7 @@ public class FusionSlamService extends MicroService {
      * Registers the service to handle TrackedObjectsEvents, PoseEvents, and TickBroadcasts,
      * and sets up callbacks for updating the global map.
      */
+
     @Override
     protected void initialize() {
         // TODO Implement this
