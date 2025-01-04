@@ -5,7 +5,6 @@ import bgu.spl.mics.application.objects.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class OutputPattern {
     String error;
@@ -13,7 +12,7 @@ public class OutputPattern {
     Map<String,StampedDetectedObjects> lastCamerasFrames;
     Map<String,ArrayList<TrackedObject>> lastLiDarWorkerTrackersFrame;
     List<Pose> poses;
-    StatisticalFolder instance = StatisticalFolder.getInstance();
+    StatisticalFolder statistics = StatisticalFolder.getInstance();
     List<LandMark> landmarks;
 
     public OutputPattern(String errorString, String faultySensor, Map<String,StampedDetectedObjects> lastCamerasFrames, Map<String,ArrayList<TrackedObject>> lastLiDarWorkerTrackersFrame, List<Pose> poses, List<LandMark> landmarks) {
@@ -66,11 +65,11 @@ public class OutputPattern {
     }
 
     public StatisticalFolder getInstance() {
-        return instance;
+        return statistics;
     }
 
     public void setInstance(StatisticalFolder instance) {
-        this.instance = instance;
+        this.statistics = instance;
     }
 
     public List<LandMark> getLandmarks() {

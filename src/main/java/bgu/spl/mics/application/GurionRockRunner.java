@@ -88,8 +88,14 @@ public class GurionRockRunner {
             }
 
             Gson gsonOutput = new GsonBuilder().create();
-                OutputPattern output = OutputInit(cameraList, lidarList);
-            writeJsonToFile(output);
+            if(StatisticalFolder.getInstance().getError() != null) {
+                OutputPattern output = errorOutputInit(cameraList, lidarList);
+                writeJsonToFile(output);
+            }
+            else{
+                OutputPattern output = new OutputPattern(null,null,null,null,null,FusionSlam.getInstance().getLandmarks());
+                writeJsonToFile(output);
+            }
 
         }
         catch (Exception e) {
@@ -171,7 +177,7 @@ public class GurionRockRunner {
         }
     }
 
-    public static OutputPattern OutputInit(List<Camera> cameraList, List<LiDarWorkerTracker> lidarList){
+    public static OutputPattern errorOutputInit(List<Camera> cameraList, List<LiDarWorkerTracker> lidarList){
         String error = StatisticalFolder.getInstance().getError();
         String faultySensor;
         Object errorObject = StatisticalFolder.getInstance().getErrorSensor();

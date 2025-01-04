@@ -117,7 +117,7 @@
       "yaw": 120.35
     }
   ],
-  "instance": {
+  "statistics": {
     "systemRuntime": 14,
     "numDetectedObjects": 9,
     "numTrackedObjects": 9,
