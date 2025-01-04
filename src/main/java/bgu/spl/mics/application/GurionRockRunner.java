@@ -1,17 +1,24 @@
 package bgu.spl.mics.application;
 
+import bgu.spl.mics.Message;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.objects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The main entry point for the GurionRock Pro Max Ultra Over 9000 simulation.
@@ -63,15 +70,26 @@ public class GurionRockRunner {
             services.add(poseService);
             FusionSlam.getInstance().setSensors(services.size());
             services.add(fusionSlamService);
-            TimeService timeService = new TimeService(TickTime,Duration);
             for(MicroService service: services){
                 Thread thread = new Thread(service);
                 thread.start();
             }
-            Thread.currentThread().sleep(3000);
+            TimeService timeService = new TimeService(TickTime,Duration);
+            Thread.currentThread().sleep(5000);
             Thread timeThread = new Thread(timeService);
             timeThread.start();
+
             //TODO:create output file
+            try {
+                timeThread.join();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+            Gson gsonOutput = new GsonBuilder().create();
+                OutputPattern output = OutputInit(cameraList, lidarList);
+            writeJsonToFile(output);
 
         }
         catch (Exception e) {
@@ -141,4 +159,48 @@ public class GurionRockRunner {
 
         return poseList;
     }
+
+    public static void writeJsonToFile(OutputPattern outputPattern) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        try (FileWriter writer = new FileWriter("output_file_ours.json")) {
+            gson.toJson(outputPattern, writer);
+            System.out.println("JSON file created successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static OutputPattern OutputInit(List<Camera> cameraList, List<LiDarWorkerTracker> lidarList){
+        String error = StatisticalFolder.getInstance().getError();
+        String faultySensor;
+        Object errorObject = StatisticalFolder.getInstance().getErrorSensor();
+        if(errorObject instanceof Camera){
+            faultySensor = ((Camera) errorObject).getCamera_key();
+        }
+        else {
+            faultySensor = "LiDarWorkerTracker" + ((LiDarWorkerTracker) errorObject).getId();
+        }
+
+
+
+        Map<String,StampedDetectedObjects> lastCamerasFrame = new HashMap<>();
+        for(Camera camera : cameraList){
+            lastCamerasFrame.put(camera.getCamera_key(),camera.getLastSDO());
+        }
+
+        Map<String,ArrayList<TrackedObject>> lastLiDarWorkerTrackersFrame = new HashMap<>();
+        for(LiDarWorkerTracker lidar : lidarList){
+            lastLiDarWorkerTrackersFrame.put("LiDarWorkerTracker"+lidar.getId(),lidar.getLastTrackedObjects());
+        }
+
+        List<Pose> poses = FusionSlam.getInstance().getPoses();
+        List<LandMark> landmarks = FusionSlam.getInstance().getLandmarks();
+
+        return new OutputPattern(error,faultySensor, lastCamerasFrame, lastLiDarWorkerTrackersFrame, poses, landmarks);
+
+    }
+
+
+
 }

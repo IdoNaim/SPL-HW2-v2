@@ -35,7 +35,7 @@ public class LiDarDataBase {
                     for (List<Double> point : cloudPoint.getCloudPoints()) {
                         cloudPointsList.add(new CloudPoint(point.get(0), point.get(1)));
                     }
-                    result = new TrackedObject(id, time, "", cloudPointsList);
+                    return result = new TrackedObject(id, time, idToDescription(id), cloudPointsList);
             }
         }
         return result;
@@ -61,5 +61,11 @@ public class LiDarDataBase {
      */
     public synchronized static LiDarDataBase getInstance() {
         return LiDarDataBaseHolder.instance;
+    }
+
+    public synchronized String idToDescription(String id){
+        String description = id.replace("_", " ");
+        description = description.replaceAll("\\s\\d+$", "");
+        return description.trim();
     }
 }

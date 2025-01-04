@@ -8,17 +8,18 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Pose {
 
+    int time;
     float x;
     float y;
     float yaw;
-    int time;
 
-    public Pose(float x, float y, float yaw, int Time) {
+    public Pose(int time, float x, float y, float yaw) {
+        this.time = time;
         this.x = x;
         this.y = y;
         this.yaw = yaw;
-        this.time = Time;
     }
+
     public int getTime(){
         return this.time;
     }

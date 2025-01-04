@@ -5,6 +5,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.objects.LiDarWorkerTracker;
 import bgu.spl.mics.application.objects.STATUS;
+import bgu.spl.mics.application.objects.StatisticalFolder;
 
 /**
  * LiDarService is responsible for processing data from the LiDAR sensor and
@@ -44,7 +45,10 @@ public class LiDarService extends MicroService {
             }
             else{
                 if(liDarWorkerTracker.getStatus() == STATUS.ERROR){
-                    sendBroadcast(new CrashedBroadcast(getName(), "LiDar disconnected"));
+                    String error = "LiDar disconnected";
+                    sendBroadcast(new CrashedBroadcast(getName(), error));
+                    StatisticalFolder.getInstance().setError(error);
+                    StatisticalFolder.getInstance().setErrorSensor(liDarWorkerTracker);
                     terminate();
                 }
                 else{
@@ -76,7 +80,10 @@ public class LiDarService extends MicroService {
             else{
                 if(liDarWorkerTracker.getStatus() == STATUS.ERROR){
                     complete(e, false);
-                    sendBroadcast(new CrashedBroadcast(getName(), "LiDar disconnected"));
+                    String error = "LiDar disconnected";
+                    sendBroadcast(new CrashedBroadcast(getName(), error));
+                    StatisticalFolder.getInstance().setError(error);
+                    StatisticalFolder.getInstance().setErrorSensor(liDarWorkerTracker);
                     terminate();
                 }
             }

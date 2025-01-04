@@ -19,7 +19,7 @@ public class LiDarWorkerTracker {
     private int frequency;
     private STATUS status;
     private ArrayList<TrackedObject> lastTrackedObjects = new ArrayList<>();
-    private ArrayList<TrackedObject> pendingList;
+    private ArrayList<TrackedObject> pendingList = new ArrayList<TrackedObject>();
     //private ArrayList<DetectedObjectsEvent> pendingList;
     private  int currentTick;
     private LiDarDataBase ldb = LiDarDataBase.getInstance();
@@ -59,6 +59,7 @@ public class LiDarWorkerTracker {
                     return null;
                 }
             }
+
             if(!result.isEmpty())
                 lastTrackedObjects = result;
             StatisticalFolder.getInstance().setNumTrackedObjects(StatisticalFolder.getInstance().getNumTrackedObjects() + result.size());
@@ -162,11 +163,16 @@ public class LiDarWorkerTracker {
                     return null;
                 }
                 result.add(obj);
-                pendingList.remove(obj);
             }
         }
+
         if(!result.isEmpty())
             lastTrackedObjects = result;
+
+        for(TrackedObject obj : result){
+            pendingList.remove(obj);
+        }
+
         return new TrackedObjectsEvent("LidarWorkerTracker"+id,result);
     }
 }

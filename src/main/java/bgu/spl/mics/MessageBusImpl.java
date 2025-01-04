@@ -141,12 +141,12 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
+	public Message awaitMessage(MicroService m) throws InterruptedException {
 		// TODO Auto-generated method stub
-		try{
+		try {
 			Message message = services.get(m).take();
 			return message;
-		}catch (InterruptedException e){
+		} catch (InterruptedException e) {
 			throw new InterruptedException();
 		}
 	}

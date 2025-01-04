@@ -35,14 +35,18 @@ public class FusionSlam {
     }
 
     public void handleTick(int time){
+        ArrayList<TrackedObject> toDelete = new ArrayList<>();
         for(TrackedObject obj : pendingList){
             if(obj.getTime() <= getLastPoseTick() ){
                 updateLandmarks(obj);
-                pendingList.remove(obj);
+                toDelete.add(obj);
             }
         }
-
+        for(TrackedObject obj : toDelete){
+            pendingList.remove(obj);
+        }
     }
+
     public void handleTrackedObjects(TrackedObjectsEvent e){
         ArrayList<TrackedObject> lst = e.getTrackedObjects();
         for (TrackedObject obj : lst) {
@@ -125,5 +129,11 @@ public class FusionSlam {
     }
     public int getSensors(){
         return sensors;
+    }
+    public ArrayList<Pose> getPoses() {
+        return Poses;
+    }
+    public ArrayList<LandMark> getLandmarks() {
+        return landmarks;
     }
 }

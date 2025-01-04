@@ -14,6 +14,8 @@ public class StatisticalFolder {
     AtomicInteger numDetectedObjects;
     AtomicInteger numTrackedObjects;
     AtomicInteger numLandmarks;
+    transient String error;
+    transient Object errorSensor;
 
     private static class StatisticalFolderHolder {
         private static StatisticalFolder instance = new StatisticalFolder();
@@ -83,7 +85,21 @@ public class StatisticalFolder {
         }while ((!this.numLandmarks.compareAndSet(oldVal,newVal)));
     }
 
+    public String getError() {
+        return error;
+    }
 
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public Object getErrorSensor() {
+        return errorSensor;
+    }
+
+    public void setErrorSensor(Object errorSensor) {
+        this.errorSensor = errorSensor;
+    }
 
     // TODO: Its not written, but I think this one is a Singleton too.
     // TODO: Its a folder which holds info about the run

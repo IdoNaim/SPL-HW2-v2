@@ -79,6 +79,14 @@ public class Camera {
         status = STATUS.ERROR;
     }
 
+    public StampedDetectedObjects getLastSDO() {
+        return lastSDO;
+    }
+
+    public void setLastSDO(StampedDetectedObjects lastSDO) {
+        this.lastSDO = lastSDO;
+    }
+
     /*
     return Null if there is error
      */

@@ -8,6 +8,7 @@ import bgu.spl.mics.application.messages.TickBroadcast;
 import bgu.spl.mics.application.objects.Camera;
 import bgu.spl.mics.application.messages.CrashedBroadcast;
 import bgu.spl.mics.application.objects.STATUS;
+import bgu.spl.mics.application.objects.StatisticalFolder;
 
 import java.util.List;
 
@@ -47,7 +48,10 @@ public class CameraService extends MicroService {
             }
             else{
                 if(camera.getStatus() == STATUS.ERROR) {
-                    sendBroadcast(new CrashedBroadcast(getName(), "Camera Disconnected"));
+                    String error = "Camera Disconnected";
+                    sendBroadcast(new CrashedBroadcast(getName(), error));
+                    StatisticalFolder.getInstance().setError(error);
+                    StatisticalFolder.getInstance().setErrorSensor(camera);
                     terminate();
                 }
                 else{
