@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.TerminatedBroadcast;
 import bgu.spl.mics.application.messages.TickBroadcast;
+import bgu.spl.mics.application.objects.FusionSlam;
 import bgu.spl.mics.application.objects.StatisticalFolder;
 
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ public class TimeService extends MicroService {
     private int speed;
     private int duration;
     private int ticks;
+    FusionSlam fusionSlam;
     /**
      * Constructor for TimeService.
      *
@@ -26,6 +28,7 @@ public class TimeService extends MicroService {
         this.speed = (int) TimeUnit.SECONDS.toMillis((long)TickTime);
         this.duration = Duration;
         this.ticks=1;
+        fusionSlam = FusionSlam.getInstance();
         // TODO Implement this
     }
 
@@ -42,7 +45,8 @@ public class TimeService extends MicroService {
                 sendBroadcast(b);
                 System.out.println("currTick is "+ getTicks());
                 Thread.sleep(getSpeed());
-                if(StatisticalFolder.getInstance().getError() != null)
+
+                if(StatisticalFolder.getInstance().getError() != null || fusionSlam.getSensors() == 0)
                     break;
                 incTick();
             }
