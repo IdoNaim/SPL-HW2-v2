@@ -172,7 +172,7 @@ public class LiDarWorkerTracker {
         for(TrackedObject obj : result){
             pendingList.remove(obj);
         }
-
+        StatisticalFolder.getInstance().setNumTrackedObjects(StatisticalFolder.getInstance().getNumTrackedObjects() + result.size());
         return new TrackedObjectsEvent("LidarWorkerTracker"+id,result);
     }
 }
