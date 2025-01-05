@@ -169,7 +169,7 @@ public class GurionRockRunner {
     public static void writeJsonToFile(OutputPattern outputPattern) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try (FileWriter writer = new FileWriter("output_file_ours.json")) {
+        try (FileWriter writer = new FileWriter("output_file.json")) {
             gson.toJson(outputPattern, writer);
             System.out.println("JSON file created successfully!");
         } catch (Exception e) {

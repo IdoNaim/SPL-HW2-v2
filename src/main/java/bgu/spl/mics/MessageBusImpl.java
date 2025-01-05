@@ -106,7 +106,7 @@ public class MessageBusImpl implements MessageBus {
 		BlockingQueue<MicroService> queue = eventsSubscribers.get(e.getClass());
 		try {
 			MicroService m = queue.poll();
-			if(m != null) {
+			if(m != null && services.get(m) != null) {
 				services.get(m).put(e);
 				queue.put(m);
 				Future<T> future = new Future<>();
