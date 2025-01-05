@@ -97,8 +97,14 @@ public class FusionSlam {
         if (found){
             LandMark oldLandmark = landmarks.get(index);
             ArrayList<CloudPoint> coordinates = oldLandmark.getCoordinates();
-            for (int i = 0 ; i< coordinates.size(); i++) {
+            int k = Math.min(coordinates.size(), realCoords.size());
+            for (int i = 0 ; i < k; i++) {
                 coordinates.get(i).update(realCoords.get(i));
+            }
+            if(realCoords.size() > k){
+                for(int i = k; i< realCoords.size(); i++){
+                    coordinates.add(realCoords.get(i));
+                }
             }
         }
         else{
