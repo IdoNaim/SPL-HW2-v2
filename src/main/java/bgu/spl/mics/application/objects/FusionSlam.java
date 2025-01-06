@@ -64,7 +64,11 @@ public class FusionSlam {
             this.lastPoseTick = e.getCurrentPose().getTime();
     }
     /**
-        argument obj must do: obj.getTime() <= lastPoseTick
+     @PRE: obj.getTime() <= lastPoseTick
+     @POST: for each 0=<i<obj.getCoordinates().size():
+                    result.get(i).getX() = cos(Poses.get(i).getYaw() * pi/180) * obj.getCoordinates().get(i).getX() - sin(Poses.get(i).getYaw() * pi/180)* obj.getCoordinates().get(i).getY() + Poses.get(i).getX()
+                    result.get(i).getY() = sin(Poses.get(i).getYaw() * pi/180) * obj.getCoordinates().get(i).getX() + cos(Poses.get(i).getYaw() * pi/180)* obj.getCoordinates().get(i).getY() + Poses.get(i).getY()
+
      */
     public ArrayList<CloudPoint> getGlobalCoords(TrackedObject obj){
         ArrayList<CloudPoint> result = new ArrayList<>();
@@ -82,7 +86,8 @@ public class FusionSlam {
         return result;
     }
     /**
-     argument obj must do: obj.getTime() <= lastPoseTick
+     @PRE: obj.getTime() <= lastPoseTick
+     @POST:
      */
     public void updateLandmarks(TrackedObject obj){
         boolean found = false;
@@ -144,5 +149,8 @@ public class FusionSlam {
     }
     public ArrayList<TrackedObject> getPendingList(){
         return pendingList;
+    }
+    public void setLastPoseTick(int tick){
+        lastPoseTick = tick;
     }
 }
