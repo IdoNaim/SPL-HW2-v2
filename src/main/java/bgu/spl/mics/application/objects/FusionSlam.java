@@ -142,4 +142,7 @@ public class FusionSlam {
     public ArrayList<LandMark> getLandmarks() {
         return landmarks;
     }
+    public ArrayList<TrackedObject> getPendingList(){
+        return pendingList;
+    }
 }
