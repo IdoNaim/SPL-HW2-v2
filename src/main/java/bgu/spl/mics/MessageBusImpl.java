@@ -122,6 +122,7 @@ public class MessageBusImpl implements MessageBus {
 	public synchronized void register(MicroService m) {
 		// TODO Auto-generated method stub
 		BlockingQueue<Message> newQueue = new LinkedBlockingQueue<Message>();
+
 		services.putIfAbsent(m,newQueue);
 
 	}
@@ -150,5 +151,19 @@ public class MessageBusImpl implements MessageBus {
 			throw new InterruptedException();
 		}
 	}
+/// tests getters and methods
+	public ConcurrentHashMap<Class<? extends Event<?>>,BlockingQueue<MicroService>> getEventsSubscribers(){
+		return this.eventsSubscribers;
+	}
 
+	public ConcurrentHashMap<Class<? extends Broadcast>, BlockingQueue<MicroService>> getBroadcastsSubscribers() {
+		return broadcastsSubscribers;
+	}
+
+	public ConcurrentHashMap<MicroService, BlockingQueue<Message>> getServices() {
+		return services;
+	}
+	public void clear(){
+		SingletonHolder.instance = new MessageBusImpl();
+	}
 }
