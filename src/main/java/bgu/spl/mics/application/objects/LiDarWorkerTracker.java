@@ -175,4 +175,13 @@ public class LiDarWorkerTracker {
         StatisticalFolder.getInstance().setNumTrackedObjects(StatisticalFolder.getInstance().getNumTrackedObjects() + result.size());
         return new TrackedObjectsEvent("LidarWorkerTracker"+id,result);
     }
+    public void setCurrentTick(int time){
+        currentTick = time;
+    }
+    public LiDarDataBase getLdb(){
+        return ldb;
+    }
+    public ArrayList<TrackedObject> getPendingList(){
+        return this.pendingList;
+    }
 }

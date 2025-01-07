@@ -16,5 +16,9 @@ public class StampedCloudPoints {
     public ArrayList<List<Double>> getCloudPoints() {
         return cloudPoints;
     }
-
+    public StampedCloudPoints(String id, int time, ArrayList<List<Double>> list){
+        this.id = id;
+        this.time = time;
+        this.cloudPoints = list;
+    }
 }

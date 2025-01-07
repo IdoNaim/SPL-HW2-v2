@@ -68,4 +68,7 @@ public class LiDarDataBase {
         description = description.replaceAll("\\s\\d+$", "");
         return description.trim();
     }
+    public ArrayList<StampedCloudPoints> getCloudPoints(){
+        return cloudPoints;
+    }
 }
