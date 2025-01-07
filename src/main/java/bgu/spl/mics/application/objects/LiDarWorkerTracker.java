@@ -14,7 +14,7 @@ public class LiDarWorkerTracker {
 
 
 
-
+//@INV: for all TrackedObject o in pendingList, o.getTime()+ frequency > currentTick
     private int id;
     private int frequency;
     private STATUS status;
@@ -42,6 +42,12 @@ public class LiDarWorkerTracker {
     /*
        return null if there is error
      */
+    //@PRE:for each DetectedObject o in e.getDetectedObjects.getObjectsArray() there should be a TrackedObjects in the DataBase matching in id and time
+    //and o doesn't have id ="ERROR"
+    //@POST: if there is Error in the LiDarDataBase in the stampedCloudPoints mathcing the objects in e.getDetectedObjects().getObjectsArray() by tie and id, return null and setStatus(STATUS.ERROR)
+    //       if there is no more data in DB, return null
+    // if e.getDetectedObjects().getTime() + this.frequency <= this.currTick, return a TrackedObjectsEvent to which holds TrackedObjects matching the Detected Objects in e.getDetectedObjects().getObjectsArray() in time and id
+    // else return TrackedObjectsEvent with empty list
     public TrackedObjectsEvent handleDetectedObjects(DetectedObjectsEvent e) {
         if (ldb.isEmpty()) {
             return null;
@@ -150,6 +156,7 @@ public class LiDarWorkerTracker {
             }
         }
     }*/
+    //@PRE:
     public TrackedObjectsEvent handleTick(int time){
         currentTick = time;
         if(ldb.isEmpty() && pendingList.isEmpty()){

@@ -14,6 +14,7 @@ import java.util.Collection;
  * Implements the Singleton pattern to ensure a single instance of FusionSlam exists.
  */
 public class FusionSlam {
+    //@INV: for each Pose p in Poses, pose.getTime() <= lastPoseTick
 
     ArrayList<LandMark> landmarks;
     ArrayList<Pose> Poses;
@@ -86,8 +87,10 @@ public class FusionSlam {
         return result;
     }
     /**
-     @PRE: obj.getTime() <= lastPoseTick
-     @POST:
+     //@PRE: obj.getTime() <= lastPoseTick
+     //@POST: for each 0=<i<obj.getCoordinates().size():
+     result.get(i).getX() = cos(Poses.get(i).getYaw() * pi/180) * obj.getCoordinates().get(i).getX() - sin(Poses.get(i).getYaw() * pi/180)* obj.getCoordinates().get(i).getY() + Poses.get(i).getX()
+     result.get(i).getY() = sin(Poses.get(i).getYaw() * pi/180) * obj.getCoordinates().get(i).getX() + cos(Poses.get(i).getYaw() * pi/180)* obj.getCoordinates().get(i).getY() + Poses.get(i).getY()
      */
     public void updateLandmarks(TrackedObject obj){
         boolean found = false;

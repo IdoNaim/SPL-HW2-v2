@@ -10,6 +10,7 @@ package bgu.spl.mics;
  * You cannot add methods to this interface.
  */
 public interface MessageBus {
+    //@INV:Microservice m is saved in messageBus from the first register(m) until did unregister(m)
 
     /**
      * Subscribes {@code m} to receive {@link Event}s of type {@code type}.
@@ -17,6 +18,8 @@ public interface MessageBus {
      * @param <T>  The type of the result expected by the completed event.
      * @param type The type to subscribe to,
      * @param m    The subscribing micro-service.
+     * //@PRE m should be registered using register()
+     * //@POST m should be in the DB holding microservices who subscribed to type
      */
     <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m);
 
@@ -25,6 +28,8 @@ public interface MessageBus {
      * <p>
      * @param type 	The type to subscribe to.
      * @param m    	The subscribing micro-service.
+     * //@PRE m should be registered using register()
+     * //@POST m should be in the DB holding microservices who subscribed to type
      */
     void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m);
 
@@ -45,6 +50,8 @@ public interface MessageBus {
      * micro-services subscribed to {@code b.getClass()}.
      * <p>
      * @param b 	The message to added to the queues.
+     * //@PRE: Some object m extending MicroService used subscribeBroadCast(b.getClass(), m)
+     * //@POST: b is in the Messages DB of every m which used subscribeBroadCast(b.getClass(), m)
      */
     void sendBroadcast(Broadcast b);
 
@@ -57,6 +64,8 @@ public interface MessageBus {
      * @param e     	The event to add to the queue.
      * @return {@link Future<T>} object to be resolved once the processing is complete,
      * 	       null in case no micro-service has subscribed to {@code e.getClass()}.
+     * //@PRE: Some object m extending MicroService used subscribeEvent(e.getClass(), m)
+     * //@POST: e is in the Messages DB of every m which used subscribeEvent(e.getClass(), m)
      */
     <T> Future<T> sendEvent(Event<T> e);
 
